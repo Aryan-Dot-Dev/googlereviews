@@ -1,0 +1,644 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Review Cards — Print &amp; Verify Sheet</title>
+<style>
+  :root {
+    --ink: #17181a;
+    --muted: #6b6f76;
+    --faint: #9a9ea6;
+    --line: #d9dbde;
+    --ok: #1b7f4f;
+    --bad: #b3261e;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
+      "Helvetica Neue", Arial, sans-serif;
+    -webkit-font-smoothing: antialiased;
+    color: var(--ink);
+    background: #fafafa;
+    padding: 24px 16px 48px;
+  }
+
+  .toolbar {
+    max-width: 860px;
+    margin: 0 auto 24px;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    align-items: center;
+    justify-content: space-between;
+  }
+  .toolbar h1 { font-size: 18px; font-weight: 650; letter-spacing: -0.01em; }
+  .toolbar .sub { font-size: 13px; color: var(--muted); margin-top: 2px; }
+  .actions { display: flex; gap: 8px; }
+  .btn {
+    font: inherit; font-size: 13.5px; font-weight: 600;
+    color: #fff; background: var(--ink);
+    border: 0; border-radius: 10px; padding: 10px 16px;
+    cursor: pointer;
+  }
+  .btn.ghost { color: var(--ink); background: #fff; border: 1px solid var(--line); }
+  .btn:hover { opacity: 0.92; }
+
+  .banner {
+    max-width: 860px; margin: 0 auto 20px;
+    font-size: 13px; line-height: 1.5; border-radius: 12px;
+    padding: 10px 14px; display: none;
+  }
+  .banner.warn { display: block; background: #fdf3e7; color: #8a5a19; border: 1px solid #f0dcbc; }
+  .banner.bad  { display: block; background: #fdecea; color: var(--bad); border: 1px solid #f3c7c3; }
+  .banner.ok   { display: block; background: #e9f6ef; color: var(--ok); border: 1px solid #c8e8d6; }
+  .banner code { font-size: 12px; }
+
+  pre.testout {
+    max-width: 860px; margin: 0 auto 20px; display: none;
+    background: #fff; border: 1px solid var(--line); border-radius: 12px;
+    padding: 14px 16px; font-size: 12px; line-height: 1.6;
+    overflow-x: auto; white-space: pre-wrap;
+  }
+
+  .sheet {
+    max-width: 860px; margin: 0 auto;
+    display: grid; grid-template-columns: repeat(auto-fill, minmax(360px, 1fr));
+    gap: 16px;
+  }
+
+  .card {
+    background: #fff; border: 1px solid var(--line); border-radius: 16px;
+    padding: 18px; break-inside: avoid; page-break-inside: avoid;
+    box-shadow: 0 1px 2px rgba(16,17,20,0.04);
+  }
+  .card .biz { font-size: 16px; font-weight: 650; letter-spacing: -0.01em; }
+  .card .bizid {
+    display: inline-block; margin-top: 6px;
+    font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+    font-size: 12px; background: #f2f3f4; border-radius: 8px; padding: 3px 8px;
+  }
+  .qrwrap { display: flex; justify-content: center; margin: 14px 0 10px; }
+  .qrwrap canvas { width: 180px; height: 180px; image-rendering: pixelated; }
+  .url {
+    font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+    font-size: 11px; line-height: 1.5; color: var(--muted);
+    word-break: break-all; background: #fafafa;
+    border: 1px solid #ebedef; border-radius: 10px; padding: 8px 10px;
+  }
+  .verify { margin-top: 10px; font-size: 12.5px; color: var(--faint); }
+  .verify.pass { color: var(--ok); font-weight: 600; }
+  .verify.fail { color: var(--bad); font-weight: 600; }
+  .cardbtns { display: flex; gap: 8px; margin-top: 12px; }
+  .cardbtns .btn { flex: 1; padding: 8px 10px; font-size: 12.5px; }
+
+  .foot {
+    max-width: 860px; margin: 24px auto 0;
+    font-size: 11.5px; color: var(--faint); text-align: center;
+  }
+
+  @media print {
+    body { background: #fff; padding: 0; }
+    .toolbar, .cardbtns { display: none; }
+    .banner, pre.testout { display: none; }
+    .sheet { max-width: none; gap: 10mm; }
+    .card { box-shadow: none; }
+    .qrwrap canvas { width: 42mm; height: 42mm; }
+  }
+</style>
+</head>
+<body>
+
+<div class="toolbar">
+  <div>
+    <h1>NFC Review Cards — Print &amp; Verify</h1>
+    <div class="sub">One card per location in <code>businesses.json</code>. Scan each QR and open the review form before encoding NFC tags.</div>
+  </div>
+  <div class="actions">
+    <button class="btn ghost" id="testBtn" type="button">Run QR self-test</button>
+    <button class="btn" id="printBtn" type="button">Print sheet</button>
+  </div>
+</div>
+
+<div class="banner" id="banner"></div>
+<pre class="testout" id="testOut"></pre>
+
+<main class="sheet" id="sheet" aria-label="Verification cards"></main>
+
+<p class="foot" id="foot"></p>
+
+<script>
+/* ================================================================
+   Minimal QR encoder (byte mode, ECC level M, versions 1-5).
+   No external dependencies: safe to host anywhere, works offline.
+   Includes a self-test suite (?test=1 or the toolbar button).
+   ================================================================ */
+
+/* ---- GF(256) arithmetic, polynomial 0x11d (QR standard) ---- */
+const EXP = new Uint8Array(512), LOG = new Uint8Array(256);
+(function () {
+  let x = 1;
+  for (let i = 0; i < 255; i++) {
+    EXP[i] = x; LOG[x] = i;
+    x <<= 1;
+    if (x & 0x100) x ^= 0x11d;
+  }
+  for (let i = 255; i < 512; i++) EXP[i] = EXP[i - 255];
+})();
+const gfMul = (a, b) => (a && b) ? EXP[LOG[a] + LOG[b]] : 0;
+const gfDiv = (a, b) => { if (!b) throw new Error("gfDiv by 0"); return a ? EXP[(LOG[a] + 254 - LOG[b]) % 255] : 0; };
+
+/* ---- QR configuration (byte mode, ECC M) ---- */
+const SIZE      = { 1: 21, 2: 25, 3: 29, 4: 33, 5: 37 };
+const TOTAL_CW  = { 1: 26, 2: 44, 3: 70, 4: 100, 5: 134 };
+const BLOCKS    = { 1: 1, 2: 1, 3: 1, 4: 2, 5: 2 };       // ECC M
+const DATA_PB   = { 1: 16, 2: 28, 3: 44, 4: 32, 5: 43 };  // data codewords per block
+const ECC_PB    = { 1: 10, 2: 16, 3: 26, 4: 18, 5: 24 };  // ecc codewords per block
+const BYTE_CAP  = { 1: 14, 2: 26, 3: 42, 4: 62, 5: 84 };  // byte-mode capacity, ECC M
+const REMAINDER = { 1: 0, 2: 7, 3: 7, 4: 7, 5: 7 };
+const ALIGN     = { 1: [], 2: [18], 3: [22], 4: [26], 5: [30] }; // alignment centers
+
+/* ---- Reed-Solomon ECC over GF(256) ---- */
+function rsGenPoly(n) {
+  let g = [1];
+  for (let i = 0; i < n; i++) {
+    const next = new Array(g.length + 1).fill(0);
+    for (let j = 0; j < g.length; j++) {
+      next[j] ^= g[j];                 // x * g
+      next[j + 1] ^= gfMul(g[j], EXP[i]); // (x - α^i) constant term, add-sub = xor
+    }
+    g = next;
+  }
+  return g; // g[0] is the x^n coefficient ... g[n] the constant
+}
+function rsEcc(data, n) {
+  const gen = rsGenPoly(n);
+  const rem = new Array(n).fill(0);
+  for (const byte of data) {
+    const factor = byte ^ rem[0];
+    rem.shift(); rem.push(0);
+    for (let i = 0; i < n; i++) rem[i] ^= gfMul(gen[i + 1], factor);
+  }
+  return rem;
+}
+
+/* ---- Bit packing ---- */
+function buildCodewords(bytes, version) {
+  const dataCw = DATA_PB[version] * BLOCKS[version];
+  const bits = [];
+  const push = (val, len) => { for (let i = len - 1; i >= 0; i--) bits.push((val >> i) & 1); };
+  push(0b0100, 4);            // byte mode
+  push(bytes.length, 8);      // char count (versions 1-9)
+  for (const b of bytes) push(b, 8);
+  // terminator (max 4 zero bits)
+  const cap = dataCw * 8;
+  push(0, Math.min(4, cap - bits.length));
+  if (bits.length % 8) push(0, 8 - (bits.length % 8)); // pad to byte
+  const padBytes = [0xEC, 0x11];
+  let p = 0;
+  while (bits.length < cap) push(padBytes[p++ % 2], 8);
+
+  const stream = [];
+  for (let i = 0; i < bits.length; i += 8) {
+    let v = 0; for (let j = 0; j < 8; j++) v = (v << 1) | bits[i + j];
+    stream.push(v);
+  }
+  // split into blocks, compute ECC, interleave (all blocks equal size here)
+  const dataBlocks = [], eccBlocks = [];
+  for (let b = 0; b < BLOCKS[version]; b++) {
+    const blk = stream.slice(b * DATA_PB[version], (b + 1) * DATA_PB[version]);
+    dataBlocks.push(blk);
+    eccBlocks.push(rsEcc(blk, ECC_PB[version]));
+  }
+  const out = [];
+  for (let i = 0; i < DATA_PB[version]; i++) for (const blk of dataBlocks) out.push(blk[i]);
+  for (let j = 0; j < ECC_PB[version]; j++)  for (const e of eccBlocks)  out.push(e[j]);
+  return out; // TOTAL_CW codewords
+}
+
+/* ---- Function patterns ---- */
+function reserveFunction(m, fn, version) {
+  const size = m.length;
+  const setRect = (r0, c0, h, w, val) => {
+    for (let r = r0; r < r0 + h; r++) for (let c = c0; c < c0 + w; c++) {
+      if (r < 0 || c < 0 || r >= size || c >= size) continue;
+      m[r][c] = val; fn[r][c] = true;
+    }
+  };
+  const finder = (r0, c0) => {
+    setRect(r0, c0, 7, 7, 1);
+    setRect(r0 + 1, c0 + 1, 5, 5, 0);
+    setRect(r0 + 2, c0 + 2, 3, 3, 1);
+    setRect(r0 - 1, c0 - 1, 9, 1, 0);  // separators
+    setRect(r0 - 1, c0 + 7, 9, 1, 0);
+    setRect(r0 - 1, c0 - 1, 1, 9, 0);
+    setRect(r0 + 7, c0 - 1, 1, 9, 0);
+  };
+  finder(0, 0); finder(0, size - 7); finder(size - 7, 0);
+  for (let i = 8; i < size - 8; i++) {  // timing
+    const v = i % 2 === 0 ? 1 : 0;
+    m[6][i] = v; fn[6][i] = true;
+    m[i][6] = v; fn[i][6] = true;
+  }
+  for (const c of ALIGN[version]) {     // alignment patterns
+    setRect(c - 2, c - 2, 5, 5, 1);
+    setRect(c - 1, c - 1, 3, 3, 0);
+    m[c][c] = 1; 
+  }
+  setRect(size - 8, 8, 1, 1, 1);        // dark module
+  // reserve format areas
+  [[8, 0], [8, 1], [8, 2], [8, 3], [8, 4], [8, 5], [8, 7], [8, 8],
+   [7, 8], [5, 8], [4, 8], [3, 8], [2, 8], [1, 8], [0, 8],
+   [size - 1, 8], [size - 2, 8], [size - 3, 8], [size - 4, 8], [size - 5, 8], [size - 6, 8], [size - 7, 8],
+   [8, size - 8], [8, size - 7], [8, size - 6], [8, size - 5], [8, size - 4], [8, size - 3], [8, size - 2], [8, size - 1]
+  ].forEach(([r, c]) => { fn[r][c] = true; });
+}
+
+/* ---- Data placement (zigzag) ---- */
+function placeData(m, fn, raw, size) {
+  const maxBits = raw.length * 8 + REMAINDER[Math.min(5, Math.max(1, size - 17) )] || raw.length * 8;
+  let idx = 0, dirUp = true;
+  for (let c = size - 1; c > 0; c -= 2) {
+    if (c === 6) c = 5;
+    for (let i = 0; i < size; i++) {
+      const r = dirUp ? size - 1 - i : i;
+      for (const cc of [c, c - 1]) {
+        if (!fn[r][cc]) {
+          const bit = idx < raw.length * 8
+            ? (raw[idx >> 3] >> (7 - (idx & 7))) & 1 : 0;
+          m[r][cc] = bit; idx++;
+        }
+      }
+    }
+    dirUp = !dirUp;
+  }
+  return idx;
+}
+
+/* ---- Format info ---- */
+function formatBits(mask) {
+  const data = (0b00 << 3) | mask; // ECC M = '00' (spec order L=01, M=00, Q=11, H=10)
+  let rem = data << 10;
+  const g = 0b10100110111;
+  for (let i = 14; i >= 10; i--) if ((rem >> i) & 1) rem ^= g << (i - 10);
+  let bits = ((data << 10) | rem) ^ 0b101010000010010;
+  return bits & 0x7fff;
+}
+function placeFormat(m, bits) {
+  const size = m.length;
+  // Spec layout, bit 0 (LSB) .. bit 14 (MSB):
+  // copy 1: bits 0-5 down column 8 (rows 0-5), bit 6 at (7,8), bit 7 at (8,8),
+  //         bit 8 at (8,7), bits 9-14 leftward along row 8 (cols 5-0)
+  for (let i = 0; i <= 5; i++) m[i][8] = (bits >> i) & 1;
+  m[7][8] = (bits >> 6) & 1;
+  m[8][8] = (bits >> 7) & 1;
+  m[8][7] = (bits >> 8) & 1;
+  for (let i = 9; i < 15; i++) m[8][14 - i] = (bits >> i) & 1;
+  // copy 2: bits 0-7 leftward along row 8 near top-right finder,
+  //         bits 8-14 upward along column 8 near bottom-left finder
+  for (let i = 0; i < 8; i++) m[8][size - 1 - i] = (bits >> i) & 1;
+  for (let i = 8; i < 15; i++) m[size - 15 + i][8] = (bits >> i) & 1;
+  // (row size-8, col 8) stays the dark module — untouched here
+  return m;
+}
+
+/* ---- Masking & penalty ---- */
+const MASKS = [
+  (i, j) => (i + j) % 2 === 0,
+  (i) => i % 2 === 0,
+  (i, j) => j % 3 === 0,
+  (i, j) => (i + j) % 3 === 0,
+  (i, j) => (Math.floor(i / 2) + Math.floor(j / 3)) % 2 === 0,
+  (i, j) => ((i * j) % 2) + ((i * j) % 3) === 0,
+  (i, j) => (((i * j) % 2) + ((i * j) % 3)) % 2 === 0,
+  (i, j) => (((i + j) % 2) + ((i * j) % 3)) % 2 === 0,
+];
+function penalty(m) {
+  const size = m.length; let score = 0;
+  const runAt = (get) => {
+    let total = 0;
+    for (let a = 0; a < size; a++) {
+      let run = 1;
+      for (let b = 1; b <= size; b++) {
+        if (b < size && get(a, b) === get(a, b - 1)) run++;
+        else { if (run >= 5) total += 3 + run - 5; run = 1; }
+      }
+    }
+    return total;
+  };
+  score += runAt((a, b) => m[a][b]) + runAt((a, b) => m[b][a]);
+  for (let r = 0; r < size - 1; r++) for (let c = 0; c < size - 1; c++) {
+    const v = m[r][c];
+    if (m[r][c+1] === v && m[r+1][c] === v && m[r+1][c+1] === v) score += 3;
+  }
+  const pat = [1,0,1,1,1,0,1];
+  const has = (get, fixed, isRow) => {
+    let count = 0;
+    for (let a = 0; a < size; a++) for (let b = 0; b <= size - 11; b++) {
+      const at = (k) => isRow ? get(a, b + k) : get(b + k, a);
+      let hit = true;
+      for (let k = 0; k < 7; k++) if (at(k) !== pat[k]) { hit = false; break; }
+      if (!hit) continue;
+      const before = b >= 4 && !at(-1) && !at(-2) && !at(-3) && !at(-4);
+      const after = b + 10 < size && !at(7) && !at(8) && !at(9) && !at(10);
+      if (before || after) count++;
+    }
+    return count;
+  };
+  score += 40 * (has((a, b) => m[a][b], 0, true) + has((a, b) => m[b][a], 0, false));
+  let dark = 0;
+  for (let r = 0; r < size; r++) for (let c = 0; c < size; c++) dark += m[r][c];
+  const pct = (dark * 100) / (size * size);
+  score += 10 * Math.floor(Math.abs(pct - 50) / 5);
+  return score;
+}
+
+/* ---- Main encode ---- */
+function qrEncode(text, opts) {
+  const bytes = Array.from(new TextEncoder().encode(text));
+  let version = 0;
+  for (let v = 1; v <= 5; v++) if (bytes.length <= BYTE_CAP[v]) { version = v; break; }
+  if (!version) throw new Error("URL too long for supported QR versions (max " + BYTE_CAP[5] + " bytes).");
+
+  const size = SIZE[version];
+  const raw = buildCodewords(bytes, version);
+  const base = Array.from({ length: size }, () => new Array(size).fill(0));
+  const fn = Array.from({ length: size }, () => new Array(size).fill(false));
+  reserveFunction(base, fn, version);
+  placeData(base, fn, raw, size);
+
+  const masks = (opts && opts.forceMask !== undefined) ? [opts.forceMask] : [0,1,2,3,4,5,6,7];
+  let best = null;
+  for (const mk of masks) {
+    const m = base.map(row => row.slice());
+    for (let r = 0; r < size; r++) for (let c = 0; c < size; c++)
+      if (!fn[r][c] && MASKS[mk](r, c)) m[r][c] ^= 1;
+    placeFormat(m, formatBits(mk));
+    const p = penalty(m);
+    if (!best || p < best.penalty) best = { modules: m, fn, mask: mk, penalty: p, version, size };
+  }
+  return best;
+}
+
+/* ---- Drawing ---- */
+function drawQR(canvas, qr, scale) {
+  const quiet = 4;
+  const dim = (qr.size + quiet * 2) * scale;
+  canvas.width = dim; canvas.height = dim;
+  const ctx = canvas.getContext("2d");
+  ctx.fillStyle = "#fff"; ctx.fillRect(0, 0, dim, dim);
+  ctx.fillStyle = "#000";
+  for (let r = 0; r < qr.size; r++) for (let c = 0; c < qr.size; c++)
+    if (qr.modules[r][c]) ctx.fillRect((c + quiet) * scale, (r + quiet) * scale, scale, scale);
+}
+
+/* ================================================================
+   Self-test suite
+   ================================================================ */
+function runSelfTests(log) {
+  let pass = 0, fail = 0;
+  const ok = (name, cond, detail) => {
+    if (cond) { pass++; log("  ✓ " + name); }
+    else { fail++; log("  ✗ " + name + (detail ? " — " + detail : "")); }
+  };
+
+  log("Capacity tables (spec, byte mode / ECC M):");
+  const capExp = { 1: 14, 2: 26, 3: 42, 4: 62, 5: 84 };
+  ok("byte capacities v1-v5", JSON.stringify(BYTE_CAP) === JSON.stringify(capExp));
+  ok("total codewords v1-v5", JSON.stringify(TOTAL_CW) === JSON.stringify({1:26,2:44,3:70,4:100,5:134}));
+  ok("block structure sums", [1,2,3,4,5].every(v => DATA_PB[v]*BLOCKS[v] + ECC_PB[v]*BLOCKS[v] === TOTAL_CW[v]));
+
+  log("GF(256) field:");
+  let gfOK = true;
+  for (let i = 1; i < 255; i++) if (EXP[LOG[i]] !== i) gfOK = false;
+  for (let i = 0; i < 255; i++) if (LOG[EXP[i]] !== i) gfOK = false;
+  ok("exp/log round-trip for all 255 elements", gfOK);
+  ok("multiplication identity & commutativity",
+     gfMul(0x53, 1) === 0x53 && gfMul(0x53, 0xCA) === gfMul(0xCA, 0x53) &&
+     gfMul(gfMul(0x53, 0xCA), 0x96) === gfMul(0x53, gfMul(0xCA, 0x96)));
+
+  log("Reed-Solomon:");
+  let rsOK = true;
+  for (let t = 0; t < 5; t++) {
+    const data = Array.from({length: 20 + t * 7}, () => Math.floor(Math.random() * 256));
+    const ecc = rsEcc(data, 15);
+    const poly = data.concat(ecc); // codeword polynomial, highest degree first
+    for (let j = 0; j < 15; j++) {
+      // evaluate at α^j via Horner — must be 0 for valid RS codewords
+      let y = 0;
+      for (const c of poly) y = gfMul(y, EXP[j]) ^ c;
+      if (y !== 0) rsOK = false;
+    }
+  }
+  ok("codeword polynomial vanishes at α^0..α^14 (5 random blocks)", rsOK);
+
+  log("Format info:");
+  ok("M / mask 0 = 0x5412 (spec reference value)", formatBits(0) === 0x5412);
+  const all = new Set([0,1,2,3,4,5,6,7].map(formatBits));
+  ok("8 distinct 15-bit format strings", all.size === 8);
+
+  log("Placement round-trip (encode -> unmask -> de-frame -> ECC check):");
+  const texts = [
+    "https://example.com/?biz=ph-m3m-urbana",
+    "https://aryan-dot-dev.github.io/googlereviews/?biz=example-second-location",
+    "unicode ✓ thé",
+  ];
+  let rtOK = true, rtDetail = "";
+  outer:
+  for (const text of texts) {
+    for (const mask of [0, 3, 7]) {
+      const qr = qrEncode(text, { forceMask: mask });
+      const size = qr.size, v = qr.version;
+      // Format info read-back: BOTH copies, in spec cell order, bit i per cell
+      const readBits = (cells) => cells.reduce((acc, [r, c], i) => acc | (qr.modules[r][c] << i), 0);
+      const copy1 = readBits([[0,8],[1,8],[2,8],[3,8],[4,8],[5,8],[7,8],[8,8],
+                              [8,7],[8,5],[8,4],[8,3],[8,2],[8,1],[8,0]]);
+      const copy2 = readBits([[8,size-1],[8,size-2],[8,size-3],[8,size-4],[8,size-5],[8,size-6],[8,size-7],[8,size-8],
+                              [size-7,8],[size-6,8],[size-5,8],[size-4,8],[size-3,8],[size-2,8],[size-1,8]]);
+      const wantFmt = formatBits(mask);
+      if (copy1 !== wantFmt || copy2 !== wantFmt || qr.modules[size - 8][8] !== 1) {
+        rtOK = false; rtDetail = "format/dark mismatch (v" + v + " mask" + mask + ")"; break outer;
+      }
+      // rebuild the raw (unmasked) frame from the final matrix
+      const raw = Array.from({ length: size }, () => new Array(size).fill(0));
+      const fn2 = Array.from({ length: size }, () => new Array(size).fill(false));
+      reserveFunction(raw, fn2, v);
+      const getRaw = (r, c) => fn2[r][c] ? raw[r][c] : qr.modules[r][c] ^ (MASKS[mask](r, c) ? 1 : 0);
+      // zigzag read
+      const bits = []; let dirUp = true;
+      for (let c = size - 1; c > 0; c -= 2) {
+        if (c === 6) c = 5;
+        for (let i = 0; i < size; i++) {
+          const r = dirUp ? size - 1 - i : i;
+          for (const cc of [c, c - 1]) if (!fn2[r][cc]) bits.push(getRaw(r, cc));
+        }
+        dirUp = !dirUp;
+      }
+      const totalCw = TOTAL_CW[v], nBlocks = BLOCKS[v], dpb = DATA_PB[v], epb = ECC_PB[v];
+      const stream = [];
+      for (let i = 0; i < totalCw * 8; i += 8) {
+        let byte = 0; for (let j = 0; j < 8; j++) byte = (byte << 1) | bits[i + j];
+        stream.push(byte);
+      }
+      // de-interleave then reassemble in original bitstream order: block 0's data, then block 1's, …
+      const dataBits = [];
+      for (let b = 0; b < nBlocks; b++) for (let i = 0; i < dpb; i++)
+        for (let j = 0; j < 8; j++) dataBits.push(bits[((i * nBlocks) + b) * 8 + j]);
+      // expected data bitstream: mode + count + payload + terminator + pad
+      const expected = Array.from(new TextEncoder().encode(text));
+      const want = [];
+      const pushV = (val, len) => { for (let i = len - 1; i >= 0; i--) want.push((val >> i) & 1); };
+      pushV(0b0100, 4); pushV(expected.length, 8);
+      for (const b of expected) pushV(b, 8);
+      const capBits = dpb * nBlocks * 8;
+      pushV(0, Math.min(4, capBits - want.length));
+      if (want.length % 8) pushV(0, 8 - (want.length % 8));
+      let p = 0;
+      while (want.length < capBits) pushV([0xEC, 0x11][p++ % 2], 8);
+      if (JSON.stringify(dataBits) !== JSON.stringify(want)) {
+        rtOK = false; rtDetail = "payload mismatch (v" + v + " mask" + mask + ")"; break outer;
+      }
+      // ECC validity per block
+      for (let b = 0; b < nBlocks; b++) {
+        const blk = [], ecc = [];
+        for (let i = 0; i < dpb; i++) blk.push(stream[(i * nBlocks) + b]);
+        for (let j = 0; j < epb; j++) ecc.push(stream[(dpb * nBlocks) + (j * nBlocks) + b]);
+        const poly = blk.concat(ecc);
+        for (let jj = 0; jj < epb; jj++) {
+          let y = 0;
+          for (const cw of poly) y = gfMul(y, EXP[jj]) ^ cw;
+          if (y !== 0) { rtOK = false; rtDetail = "ECC invalid (v" + v + " mask" + mask + ")"; break outer; }
+        }
+      }
+    }
+  }
+  ok("payload + ECC survive full encode/decode round-trip", rtOK, rtDetail);
+
+  log("");
+  log(pass + " passed, " + fail + " failed");
+  return fail === 0;
+}
+
+/* ================================================================
+   Sheet rendering
+   ================================================================ */
+const $ = (id) => document.getElementById(id);
+
+function banner(kind, html) {
+  const b = $("banner");
+  b.className = "banner " + kind;
+  b.innerHTML = html;
+}
+
+async function renderSheet() {
+  const sheet = $("sheet");
+  let registry;
+  try {
+    const res = await fetch("businesses.json", { cache: "no-cache" });
+    if (!res.ok) throw new Error("businesses.json → HTTP " + res.status);
+    registry = await res.json();
+  } catch (e) {
+    banner("bad", "Couldn't load <code>businesses.json</code> — " + e.message +
+      ". Serve this folder over HTTP (e.g. <code>python -m http.server</code>) and reopen.");
+    return;
+  }
+
+  /* Canonical production origin encoded into every card.
+     The sheet can be opened from anywhere (even localhost) and still
+     produce the URLs that NFC tags should carry in production. */
+  const SITE_BASE = "https://googlereviews.in/";
+  const entries = Object.entries(registry.businesses || {});
+  if (!entries.length) { banner("bad", "<code>businesses.json</code> contains no locations."); return; }
+
+  const pageUrl = (id) => SITE_BASE + "index.html?biz=" + encodeURIComponent(id);
+
+  let qrFailures = 0;
+  for (const [id, cfg] of entries) {
+    const url = pageUrl(id);
+    const card = document.createElement("section");
+    card.className = "card";
+    card.innerHTML =
+      '<div class="biz"></div>' +
+      '<span class="bizid"></span>' +
+      '<div class="qrwrap"><canvas aria-label="QR code"></canvas></div>' +
+      '<div class="url"></div>' +
+      '<div class="verify">Scanner check: not run</div>' +
+      '<div class="cardbtns">' +
+        '<button class="btn ghost" data-copy type="button">Copy link</button>' +
+        '<button class="btn" data-open type="button">Open review page</button>' +
+      '</div>';
+    card.querySelector(".biz").textContent = cfg.businessName || id;
+    card.querySelector(".bizid").textContent = "biz=" + id;
+    card.querySelector(".url").textContent = url;
+    card.querySelector("[data-copy]").addEventListener("click", (e) => {
+      navigator.clipboard.writeText(url).then(() => {
+        e.target.textContent = "Copied ✓";
+        setTimeout(() => { e.target.textContent = "Copy link"; }, 1200);
+      });
+    });
+    card.querySelector("[data-open]").addEventListener("click", () => window.open(url, "_blank"));
+    sheet.appendChild(card);
+
+    try {
+      const qr = qrEncode(url);
+      drawQR(card.querySelector("canvas"), qr, 6);
+      const vEl = card.querySelector(".verify");
+      vEl.textContent = "QR built (v" + qr.version + "·M·mask " + qr.mask + ") — waiting for scanner check…";
+      card.dataset.url = url;
+    } catch (e) {
+      qrFailures++;
+      card.querySelector(".verify").textContent = "QR build failed: " + e.message;
+      card.querySelector(".verify").className = "verify fail";
+    }
+  }
+
+  $("foot").textContent = "Every card encodes https://googlereviews.in/index.html?biz=<id> — deploy this folder to that domain before encoding NFC tags.";
+  if (qrFailures) banner("bad", qrFailures + " QR code(s) failed to build — do not print.");
+
+  // External verification with the browser's own barcode decoder, if available
+  if (!("BarcodeDetector" in window)) {
+    document.querySelectorAll(".card .verify").forEach((el) => {
+      el.textContent = "Before encoding NFC: scan this QR with your phone and confirm the review page opens.";
+    });
+  }
+  if ("BarcodeDetector" in window) {
+    try {
+      const det = new BarcodeDetector({ formats: ["qr_code"] });
+      for (const card of sheet.children) {
+        if (!card.dataset.url) continue;
+        const bmp = await createImageBitmap(card.querySelector("canvas"));
+        const hits = await det.detect(bmp);
+        const vEl = card.querySelector(".verify");
+        if (hits.length && hits[0].rawValue === card.dataset.url) {
+          vEl.textContent = "✓ Decoded by browser scanner — matches this card's URL";
+          vEl.className = "verify pass";
+        } else {
+          vEl.textContent = hits.length ? "✗ Decoded to a different value — DO NOT PRINT" : "✗ Not decodable — DO NOT PRINT";
+          vEl.className = "verify fail";
+        }
+      }
+    } catch (e) { /* decoder unavailable — leave the neutral message */ }
+  }
+}
+
+$("printBtn").addEventListener("click", () => window.print());
+$("testBtn").addEventListener("click", () => {
+  const out = $("testOut");
+  out.style.display = "block";
+  const lines = [];
+  const passed = runSelfTests((l) => lines.push(l));
+  out.textContent = lines.join("\n");
+  banner(passed ? "ok" : "bad", passed
+    ? "QR self-test passed — encoder verified. Safe to print."
+    : "QR self-test FAILED — do not print until fixed.");
+});
+
+if (location.protocol === "file:") {
+  banner("warn", "Opened as <code>file://</code> — the registry and QR checks need HTTP. Run <code>python -m http.server</code> in this folder and open via localhost.");
+}
+if (new URLSearchParams(location.search).has("test")) $("testBtn").click();
+
+renderSheet();
+</script>
+</body>
+</html>
