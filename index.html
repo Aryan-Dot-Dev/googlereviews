@@ -1,0 +1,533 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#fafafa">
+  <title>Share your experience</title>
+  <style>
+    :root {
+      --bg: #fafafa;
+      --surface: #ffffff;
+      --text: #17181a;
+      --text-secondary: #6b6f76;
+      --text-muted: #9a9ea6;
+      --border: #ebedef;
+      --accent: #17181a;          /* primary CTA color */
+      --accent-hover: #26282c;
+      --success: #1b7f4f;
+      --danger: #b3261e;
+      --radius: 16px;
+      --radius-sm: 12px;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    html { -webkit-text-size-adjust: 100%; }
+
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
+        "Helvetica Neue", Arial, sans-serif;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    .page {
+      min-height: 100svh;
+      max-width: 420px;
+      margin: 0 auto;
+      padding: 24px 20px calc(28px + env(safe-area-inset-bottom));
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      gap: 24px;
+    }
+
+    @media (max-width: 360px) {
+      .page { padding-left: 16px; padding-right: 16px; }
+    }
+
+    /* ---------- Business identity ---------- */
+
+    .identity {
+      text-align: center;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .logo {
+      width: 56px;
+      height: 56px;
+      border-radius: 14px;
+      background: var(--accent);
+      color: #fff;
+      font-size: 19px;
+      font-weight: 700;
+      letter-spacing: 0.04em;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      overflow: hidden;
+      flex-shrink: 0;
+    }
+
+    .logo img { width: 100%; height: 100%; object-fit: cover; }
+
+    .business {
+      font-size: 17px;
+      font-weight: 650;
+      letter-spacing: -0.01em;
+    }
+
+    .tagline {
+      font-size: 14px;
+      color: var(--text-secondary);
+      margin-top: -8px;
+    }
+
+    /* ---------- Review card ---------- */
+
+    .review-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      box-shadow: 0 1px 2px rgba(16, 17, 20, 0.04);
+      padding: 18px 18px 20px;
+    }
+
+    .card-head {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 12px;
+    }
+
+    .card-label {
+      font-size: 11px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: var(--text-muted);
+    }
+
+    .edit-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      font: inherit;
+      font-size: 13px;
+      font-weight: 500;
+      color: var(--text-secondary);
+      background: transparent;
+      border: 0;
+      border-radius: 8px;
+      padding: 8px 10px;
+      margin: -8px -10px;
+      cursor: pointer;
+      transition: background-color 150ms ease, color 150ms ease;
+    }
+
+    .edit-btn:hover { background: #f2f3f4; color: var(--text); }
+    .edit-btn:focus-visible { outline: 2px solid rgba(23, 24, 26, 0.35); outline-offset: 2px; }
+
+    .edit-btn svg { width: 14px; height: 14px; }
+
+    .review-text {
+      font-size: 16px;
+      line-height: 1.65;
+      color: #26282c;
+      overflow-wrap: break-word;
+    }
+
+    .review-input {
+      width: 100%;
+      min-height: 150px;
+      font: inherit;
+      font-size: 16px;
+      line-height: 1.6;
+      color: #26282c;
+      background: #fcfcfd;
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      padding: 14px;
+      resize: vertical;
+    }
+
+    .review-input:focus {
+      outline: 2px solid rgba(23, 24, 26, 0.15);
+      outline-offset: -1px;
+      border-color: #b9bdc4;
+    }
+
+    .edit-actions {
+      display: flex;
+      justify-content: flex-end;
+      margin-top: 12px;
+    }
+
+    .done-btn {
+      font: inherit;
+      font-size: 13.5px;
+      font-weight: 600;
+      color: var(--text);
+      background: #f2f3f4;
+      border: 0;
+      border-radius: 10px;
+      padding: 9px 16px;
+      cursor: pointer;
+      transition: background-color 150ms ease;
+    }
+
+    .done-btn:hover { background: #e8e9eb; }
+    .done-btn:focus-visible { outline: 2px solid rgba(23, 24, 26, 0.35); outline-offset: 2px; }
+
+    /* ---------- Primary CTA ---------- */
+
+    .cta-area {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .cta {
+      width: 100%;
+      min-height: 56px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      font: inherit;
+      font-size: 16px;
+      font-weight: 600;
+      color: #fff;
+      background: var(--accent);
+      border: 0;
+      border-radius: 14px;
+      padding: 0 20px;
+      cursor: pointer;
+      box-shadow: 0 1px 2px rgba(16, 17, 20, 0.12);
+      transition: background-color 150ms ease, transform 150ms ease, opacity 150ms ease;
+    }
+
+    .cta:hover:not(:disabled) { background: var(--accent-hover); }
+    .cta:active:not(:disabled) { transform: scale(0.985); }
+    .cta:focus-visible { outline: 2px solid rgba(23, 24, 26, 0.5); outline-offset: 3px; }
+    .cta:disabled { cursor: default; opacity: 0.9; }
+
+    .cta svg { width: 18px; height: 18px; flex-shrink: 0; }
+
+    .spinner {
+      width: 18px;
+      height: 18px;
+      border: 2px solid rgba(255, 255, 255, 0.35);
+      border-top-color: #fff;
+      border-radius: 50%;
+      animation: spin 0.7s linear infinite;
+    }
+
+    @keyframes spin { to { transform: rotate(360deg); } }
+
+    .confirm {
+      font-size: 13px;
+      font-weight: 500;
+      color: var(--success);
+      text-align: center;
+    }
+
+    .error {
+      font-size: 13px;
+      line-height: 1.5;
+      color: var(--danger);
+      text-align: center;
+    }
+
+    /* ---------- Trust text ---------- */
+
+    .trust {
+      font-size: 12.5px;
+      color: var(--text-muted);
+      text-align: center;
+    }
+
+    [hidden] { display: none !important; }
+
+    @media (prefers-reduced-motion: reduce) {
+      * { transition: none !important; animation-duration: 0.01ms !important; }
+    }
+  </style>
+</head>
+<body>
+  <main class="page">
+
+    <!-- 1. Business identity -->
+    <header class="identity">
+      <div class="logo" id="logo" aria-hidden="true"></div>
+      <h1 class="business" id="businessName"></h1>
+      <p class="tagline">Share your experience</p>
+    </header>
+
+    <!-- 2. Review message -->
+    <section class="review-card" aria-label="Suggested review">
+      <div class="card-head">
+        <span class="card-label" id="cardLabel">Suggested review</span>
+        <button class="edit-btn" id="editBtn" type="button"
+                aria-expanded="false" aria-controls="reviewBody">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+               stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <path d="M17 3a2.8 2.8 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5Z"/>
+          </svg>
+          Edit review
+        </button>
+      </div>
+      <div id="reviewBody">
+        <p class="review-text" id="reviewText"></p>
+        <textarea class="review-input" id="reviewInput" hidden
+                  aria-label="Edit your review"></textarea>
+        <div class="edit-actions" id="editActions" hidden>
+          <button class="done-btn" id="doneBtn" type="button">Done</button>
+        </div>
+      </div>
+    </section>
+
+    <!-- 3. Primary CTA -->
+    <section class="cta-area">
+      <button class="cta" id="ctaBtn" type="button" disabled>
+        <svg id="iconClipboard" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+             stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <rect x="8" y="2" width="8" height="4" rx="1"/>
+          <path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"/>
+        </svg>
+        <span class="spinner" id="iconSpinner" hidden></span>
+        <svg id="iconCheck" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+             stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" hidden aria-hidden="true">
+          <path d="M20 6 9 17l-5-5"/>
+        </svg>
+        <span id="ctaLabel">Copy &amp; Open Google</span>
+      </button>
+      <p class="confirm" id="confirmMsg" role="status" aria-live="polite" hidden>
+        Review copied. Paste it into Google.
+      </p>
+      <p class="error" id="errorMsg" role="alert" hidden></p>
+    </section>
+
+    <!-- 4. Trust / transparency -->
+    <p class="trust">You can edit the review before posting.</p>
+
+  </main>  <script>
+    /* =========================================================
+       CONFIG — site-wide defaults. Per-location values live in
+       businesses.json, keyed by id. NFC cards point at this page
+       with just the id:
+         https://your-domain.example/?biz=ph-m3m-urbana
+       To add a location: copy a block in businesses.json and print
+       the card with the matching ?biz= id. One-off direct overrides
+       still work: ?business=...&text=...&url=https://g.page/r/.../review
+       ========================================================= */
+    const CONFIG = {
+      registryUrl: "./businesses.json",
+      businessName: "Pizza Hut — M3M Urbana",
+
+      logoUrl: "",            // optional image URL; leave "" to show initials
+      logoInitials: "PH",     // shown when logoUrl is empty
+      reviewText:
+        "The food was excellent and the service was very good. I really enjoyed my experience and would definitely recommend this place.",
+      googleReviewUrl: "https://search.google.com/local/writereview?placeid=ChIJMUFwq1QjDTkR_aTKHiWQo3g",
+      redirectDelayMs: 900,   // brief pause so the confirmation is visible
+    };
+
+    const params = new URLSearchParams(location.search);
+    const bizId = params.get("biz");
+
+    /* Runtime values, resolved in init() below. */
+    let businessName, googleReviewUrl, defaultText, currentText;
+
+    async function loadRegistryEntry() {
+      if (!bizId) return null;
+      try {
+        const res = await fetch(CONFIG.registryUrl, { cache: "no-cache" });
+        if (!res.ok) return null;
+        const data = await res.json();
+        const entry = data.businesses && data.businesses[bizId];
+        return entry && typeof entry === "object" ? entry : null;
+      } catch (_) {
+        console.warn("[review] Could not load business registry:", CONFIG.registryUrl);
+        return null;
+      }
+    }
+
+    function resolveConfig(entry) {
+      Object.assign(
+        CONFIG,
+        Object.fromEntries(
+          Object.entries(entry || {}).filter(([, v]) => v !== undefined && v !== null)
+        )
+      );
+      businessName    = params.get("business") || CONFIG.businessName;
+      googleReviewUrl = params.get("url")      || CONFIG.googleReviewUrl;
+      defaultText     = params.get("text")     || CONFIG.reviewText;
+    }
+
+    /* ---------- Populate identity ---------- */
+    function renderIdentity() {
+      document.title = "Share your experience — " + businessName;
+      document.getElementById("businessName").textContent = businessName;
+
+      const logo = document.getElementById("logo");
+      logo.textContent = "";
+      if (CONFIG.logoUrl) {
+        const img = document.createElement("img");
+        img.src = CONFIG.logoUrl;
+        img.alt = "";
+        logo.appendChild(img);
+      } else {
+        logo.textContent = CONFIG.logoInitials;
+      }
+    }
+
+    function showFatal(message) {
+      const errorMsg = document.getElementById("errorMsg");
+      errorMsg.textContent = message;
+      errorMsg.hidden = false;
+      document.getElementById("ctaBtn").disabled = true;
+    }
+
+    async function init() {
+      const entry = await loadRegistryEntry();
+      if (bizId && !entry) {
+        console.warn("[review] Unknown business id:", bizId);
+        showFatal("This review link isn't valid. Please ask a staff member for help.");
+        return;
+      }
+      resolveConfig(entry);
+      renderIdentity();
+      currentText = defaultText;
+      reviewTextEl.textContent = currentText;
+      syncLabel();
+      document.getElementById("ctaBtn").disabled = false;
+    }
+
+    /* ---------- Review text + edit flow ---------- */
+    const reviewTextEl = document.getElementById("reviewText");
+    const reviewInput  = document.getElementById("reviewInput");
+    const editBtn      = document.getElementById("editBtn");
+    const doneBtn      = document.getElementById("doneBtn");
+    const editActions  = document.getElementById("editActions");
+    const cardLabel    = document.getElementById("cardLabel");
+
+    function syncLabel() {
+      cardLabel.textContent =
+        currentText.trim() === defaultText.trim() ? "Suggested review" : "Your review";
+    }
+
+    function stopEditing() {
+      const trimmed = reviewInput.value.trim();
+      currentText = trimmed || defaultText;
+      reviewTextEl.textContent = currentText;
+      reviewInput.hidden = true;
+      editActions.hidden = true;
+      reviewTextEl.hidden = false;
+      editBtn.hidden = false;
+      editBtn.setAttribute("aria-expanded", "false");
+      syncLabel();
+      editBtn.focus();
+    }
+
+    editBtn.addEventListener("click", () => {
+      reviewInput.value = currentText;
+      reviewTextEl.hidden = true;
+      editBtn.hidden = true;
+      editActions.hidden = false;
+      reviewInput.hidden = false;
+      editBtn.setAttribute("aria-expanded", "true");
+      reviewInput.focus();
+      reviewInput.setSelectionRange(reviewInput.value.length, reviewInput.value.length);
+    });
+
+    doneBtn.addEventListener("click", stopEditing);
+    reviewInput.addEventListener("keydown", (e) => {
+      if (e.key === "Escape") stopEditing();
+    });
+
+    /* ---------- CTA state machine ---------- */
+    const ctaBtn      = document.getElementById("ctaBtn");
+    const ctaLabel    = document.getElementById("ctaLabel");
+    const iconClip    = document.getElementById("iconClipboard");
+    const iconSpin    = document.getElementById("iconSpinner");
+    const iconCheck   = document.getElementById("iconCheck");
+    const confirmMsg  = document.getElementById("confirmMsg");
+    const errorMsg    = document.getElementById("errorMsg");
+
+    let busy = false;
+
+    function setButton(state) {
+      iconClip.hidden  = state !== "idle";
+      iconSpin.hidden  = state !== "copying";
+      iconCheck.hidden = state !== "copied";
+      ctaLabel.textContent =
+        state === "copying" ? "Copying…" :
+        state === "copied"  ? "Copied — Opening Google…" :
+                              "Copy & Open Google";
+      ctaBtn.disabled = state !== "idle";
+    }
+
+    function showMessages(confirm, error) {
+      confirmMsg.hidden = !confirm;
+      errorMsg.hidden = !error;
+      if (error) errorMsg.textContent = error;
+    }
+
+    async function copyToClipboard(text) {
+      try {
+        await navigator.clipboard.writeText(text);
+        return true;
+      } catch (_) { /* fall through to legacy path */ }
+      try {
+        const ta = document.createElement("textarea");
+        ta.value = text;
+        ta.setAttribute("readonly", "");
+        ta.style.cssText = "position:fixed;top:-9999px;opacity:0;";
+        document.body.appendChild(ta);
+        ta.select();
+        const ok = document.execCommand("copy");
+        document.body.removeChild(ta);
+        return ok;
+      } catch (_) {
+        return false;
+      }
+    }
+
+    ctaBtn.addEventListener("click", async () => {
+      if (busy) return;
+
+      if (!googleReviewUrl || googleReviewUrl.includes("YOUR_PLACE_ID")) {
+        showMessages(false, "Review link isn't configured yet. Please contact the business.");
+        return;
+      }
+
+      busy = true;
+      setButton("copying");
+      showMessages(false, null);
+
+      const ok = await copyToClipboard(currentText);
+
+      if (ok) {
+        setButton("copied");
+        showMessages(true, null);
+        setTimeout(() => { window.location.href = googleReviewUrl; }, CONFIG.redirectDelayMs);
+      } else {
+        busy = false;
+        setButton("idle");
+        showMessages(false,
+          "We couldn't reach your clipboard. Tap “Copy & Open Google” again — " +
+          "you can also long-press the review above to copy it manually.");
+      }
+    });
+
+    init();
+  </script>
+</body>
+</html>

@@ -1,0 +1,18 @@
+{
+  "businesses": {
+    "ph-m3m-urbana": {
+      "businessName": "Pizza Hut — M3M Urbana",
+      "logoUrl": "",
+      "logoInitials": "PH",
+      "reviewText": "The food was excellent and the service was very good. I really enjoyed my experience and would definitely recommend this place.",
+      "googleReviewUrl": "https://search.google.com/local/writereview?placeid=ChIJMUFwq1QjDTkR_aTKHiWQo3g"
+    },
+    "example-second-location": {
+      "businessName": "Example Cafe — Sector 45",
+      "logoUrl": "",
+      "logoInitials": "EC",
+      "reviewText": "Great coffee, friendly staff, and a lovely atmosphere. I would definitely come back and recommend it to others.",
+      "googleReviewUrl": "https://search.google.com/local/writereview?placeid=YOUR_PLACE_ID"
+    }
+  }
+}
