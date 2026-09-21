@@ -40,6 +40,7 @@
 
   <style>
     :root {
+      color-scheme: dark;
       /* Dark backgrounds — B4 allowed values only */
       --bg: #000000;
       --panel: #181818;
@@ -103,7 +104,6 @@
     i.ph { font-size: inherit; line-height: 1; }
 
     .wrap { max-width: 1080px; margin: 0 auto; padding: 0 var(--s-300); }
-    .narrow { max-width: 680px; }
 
     section { padding: var(--s-800) 0; }
 
@@ -232,9 +232,10 @@
       gap: var(--s-300);
       opacity: 0;
       pointer-events: none;
-      transition: opacity 300ms var(--ease-fluid);
+      visibility: hidden; /* keeps the links out of tab order while closed */
+      transition: opacity 300ms var(--ease-fluid), visibility 300ms;
     }
-    .menu.open { opacity: 1; pointer-events: auto; }
+    .menu.open { opacity: 1; pointer-events: auto; visibility: visible; }
     .menu a {
       font-size: var(--text-3xl);
       font-weight: 700;
@@ -867,7 +868,6 @@
         opacity 800ms var(--ease-fluid),
         transform 800ms var(--ease-fluid),
         filter 800ms var(--ease-fluid);
-      will-change: opacity, transform;
     }
     .reveal.in { opacity: 1; transform: none; filter: none; }
     .reveal-group .reveal:nth-child(2) { transition-delay: 80ms; }
@@ -943,7 +943,7 @@
           Works with any Google Business Profile. No app for your customers.
         </p>
 
-        <div class="scene reveal" aria-hidden="true">
+        <div class="scene reveal" aria-hidden="true" role="presentation">
           <div class="scene-card">
             <div class="top">
               <i class="ph-bold ph-contactless-payment"></i>
@@ -1310,7 +1310,6 @@
        ========================================================= */
     const CONFIG = {
       neonConnectionString: "",
-      submitEndpoint: "",
       fallbackEmail: "",
       successCopyDefault: "We'll reach out shortly to set everything up.",
       successCopyMeeting: "We'll reach out shortly to confirm your meeting and set everything up.",
@@ -1511,14 +1510,6 @@
       );
       return rows && rows[0] && rows[0].id;
     }
-    async function postToEndpoint(payload) {
-      const res = await fetch(CONFIG.submitEndpoint, {
-        method: "POST",
-        headers: { "content-type": "application/json" },
-        body: JSON.stringify(payload),
-      });
-      if (!res.ok) throw new Error("Endpoint returned " + res.status);
-    }
     function mailtoFallback(payload) {
       const body =
         `Name: ${payload.name}\nPhone: ${payload.phone}\nBusiness: ${payload.business}\n` +
@@ -1560,7 +1551,6 @@
       setBusy("sending");
       try {
         if (CONFIG.neonConnectionString) await insertIntoNeon(payload);
-        else if (CONFIG.submitEndpoint) await postToEndpoint(payload);
         else if (CONFIG.fallbackEmail) { mailtoFallback(payload); setBusy(false); return; }
         else throw new Error("not-configured");
 
