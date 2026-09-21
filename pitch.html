@@ -1,0 +1,696 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#fafafa">
+  <title>Get Google Reviews for your business</title>
+  <style>
+    :root {
+      --bg: #fafafa;
+      --surface: #ffffff;
+      --text: #17181a;
+      --text-secondary: #6b6f76;
+      --text-muted: #9a9ea6;
+      --border: #ebedef;
+      --accent: #17181a;          /* primary CTA color */
+      --accent-hover: #26282c;
+      --success: #1b7f4f;
+      --danger: #b3261e;
+      --radius: 16px;
+      --radius-sm: 12px;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    html { -webkit-text-size-adjust: 100%; }
+
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
+        "Helvetica Neue", Arial, sans-serif;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    .page {
+      min-height: 100svh;
+      max-width: 480px;
+      margin: 0 auto;
+      padding: 40px 20px calc(40px + env(safe-area-inset-bottom));
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+    }
+
+    @media (max-width: 360px) {
+      .page { padding-left: 16px; padding-right: 16px; }
+    }
+
+    /* ---------- Pitch header ---------- */
+
+    .hero {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      text-align: center;
+      gap: 14px;
+      padding-top: 12px;
+    }
+
+    .logo {
+      width: 56px;
+      height: 56px;
+      border-radius: 14px;
+      background: var(--accent);
+      color: #fff;
+      font-size: 19px;
+      font-weight: 700;
+      letter-spacing: 0.04em;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      overflow: hidden;
+      flex-shrink: 0;
+    }
+
+    .logo svg { width: 30px; height: 30px; }
+    .logo img { width: 100%; height: 100%; object-fit: cover; }
+
+    h1 {
+      font-size: 26px;
+      line-height: 1.22;
+      font-weight: 700;
+      letter-spacing: -0.02em;
+    }
+
+    .hero .pitch {
+      font-size: 15px;
+      line-height: 1.6;
+      color: var(--text-secondary);
+      max-width: 40ch;
+    }
+
+    .hero .pitch strong { color: var(--text); font-weight: 600; }
+
+    /* ---------- Value points ---------- */
+
+    .points {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .point {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      box-shadow: 0 1px 2px rgba(16, 17, 20, 0.04);
+      padding: 14px 16px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      font-size: 14px;
+      line-height: 1.45;
+      color: var(--text-secondary);
+    }
+
+    .point strong { color: var(--text); font-weight: 600; }
+
+    .point svg {
+      width: 20px;
+      height: 20px;
+      flex-shrink: 0;
+      color: var(--text);
+    }
+
+    /* ---------- Form card ---------- */
+
+    .form-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      box-shadow: 0 1px 2px rgba(16, 17, 20, 0.04);
+      padding: 20px 18px;
+    }
+
+    .form-head {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+      margin-bottom: 16px;
+    }
+
+    .card-label {
+      font-size: 11px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: var(--text-muted);
+    }
+
+    .form-title {
+      font-size: 17px;
+      font-weight: 650;
+      letter-spacing: -0.01em;
+    }
+
+    .form-sub {
+      font-size: 13.5px;
+      line-height: 1.5;
+      color: var(--text-secondary);
+    }
+
+    .field { margin-bottom: 14px; }
+
+    label {
+      display: block;
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--text);
+      margin-bottom: 6px;
+    }
+
+    label .opt {
+      font-weight: 500;
+      color: var(--text-muted);
+    }
+
+    input[type="text"], input[type="tel"], textarea, select {
+      width: 100%;
+      font: inherit;
+      font-size: 16px;
+      line-height: 1.5;
+      color: #26282c;
+      background: #fcfcfd;
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      padding: 12px 14px;
+      transition: border-color 150ms ease, box-shadow 150ms ease;
+    }
+
+    textarea { min-height: 84px; resize: vertical; }
+
+    input:focus, textarea:focus, select:focus {
+      outline: 2px solid rgba(23, 24, 26, 0.15);
+      outline-offset: -1px;
+      border-color: #b9bdc4;
+    }
+
+    input::placeholder, textarea::placeholder { color: var(--text-muted); }
+
+    /* ---------- Meeting toggle ---------- */
+
+    .meeting {
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      background: #fcfcfd;
+      padding: 14px;
+      margin: 2px 0 14px;
+    }
+
+    .meeting-row {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      cursor: pointer;
+      -webkit-user-select: none;
+      user-select: none;
+    }
+
+    .meeting-row input { position: absolute; opacity: 0; pointer-events: none; }
+
+    .switch {
+      width: 44px;
+      height: 26px;
+      border-radius: 13px;
+      background: #d9dbde;
+      position: relative;
+      flex-shrink: 0;
+      transition: background-color 180ms ease;
+    }
+
+    .switch::after {
+      content: "";
+      position: absolute;
+      top: 3px;
+      left: 3px;
+      width: 20px;
+      height: 20px;
+      border-radius: 50%;
+      background: #fff;
+      box-shadow: 0 1px 2px rgba(16, 17, 20, 0.2);
+      transition: transform 180ms ease;
+    }
+
+    .meeting-row input:checked + .switch { background: var(--accent); }
+    .meeting-row input:checked + .switch::after { transform: translateX(18px); }
+    .meeting-row input:focus-visible + .switch {
+      outline: 2px solid rgba(23, 24, 26, 0.35);
+      outline-offset: 2px;
+    }
+
+    .meeting-copy { display: flex; flex-direction: column; gap: 1px; }
+    .meeting-copy .t { font-size: 14px; font-weight: 600; }
+    .meeting-copy .d { font-size: 12.5px; color: var(--text-secondary); }
+
+    #meetingOptions { margin-top: 12px; }
+
+    /* ---------- Submit ---------- */
+
+    .cta {
+      width: 100%;
+      min-height: 56px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      font: inherit;
+      font-size: 16px;
+      font-weight: 600;
+      color: #fff;
+      background: var(--accent);
+      border: 0;
+      border-radius: 14px;
+      padding: 0 20px;
+      cursor: pointer;
+      box-shadow: 0 1px 2px rgba(16, 17, 20, 0.12);
+      transition: background-color 150ms ease, transform 150ms ease, opacity 150ms ease;
+    }
+
+    .cta:hover:not(:disabled) { background: var(--accent-hover); }
+    .cta:active:not(:disabled) { transform: scale(0.985); }
+    .cta:focus-visible { outline: 2px solid rgba(23, 24, 26, 0.5); outline-offset: 3px; }
+    .cta:disabled { cursor: default; opacity: 0.6; }
+
+    .cta svg { width: 18px; height: 18px; flex-shrink: 0; }
+
+    .spinner {
+      width: 18px;
+      height: 18px;
+      border: 2px solid rgba(255, 255, 255, 0.35);
+      border-top-color: #fff;
+      border-radius: 50%;
+      animation: spin 0.7s linear infinite;
+    }
+
+    @keyframes spin { to { transform: rotate(360deg); } }
+
+    .field-error {
+      font-size: 12.5px;
+      line-height: 1.5;
+      color: var(--danger);
+      margin-top: 10px;
+      text-align: center;
+    }
+
+    .trust {
+      font-size: 12.5px;
+      color: var(--text-muted);
+      text-align: center;
+      margin-top: 4px;
+    }
+
+    /* ---------- Success state ---------- */
+
+    .success {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      box-shadow: 0 1px 2px rgba(16, 17, 20, 0.04);
+      padding: 32px 24px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      text-align: center;
+      gap: 10px;
+    }
+
+    .success .badge {
+      width: 52px;
+      height: 52px;
+      border-radius: 50%;
+      background: #eaf5ef;
+      color: var(--success);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-bottom: 4px;
+    }
+
+    .success .badge svg { width: 26px; height: 26px; }
+
+    .success h2 { font-size: 19px; font-weight: 700; letter-spacing: -0.01em; }
+    .success p { font-size: 14px; line-height: 1.6; color: var(--text-secondary); max-width: 34ch; }
+
+    [hidden] { display: none !important; }
+
+    @media (prefers-reduced-motion: reduce) {
+      * { transition: none !important; animation-duration: 0.01ms !important; }
+    }
+  </style>
+  <script type="importmap">
+    {
+      "imports": {
+        "@neondatabase/serverless": "https://esm.sh/@neondatabase/serverless@1.1.0"
+      }
+    }
+  </script>
+</head>
+<body>
+  <main class="page">
+
+    <!-- 1. Pitch header -->
+    <header class="hero">
+      <div class="logo" aria-hidden="true">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+             stroke-linecap="round" stroke-linejoin="round">
+          <path d="M12 2v14"/><path d="m19 9-7 7-7-7"/><path d="M5 22h14"/>
+        </svg>
+      </div>
+      <h1>Get more Google reviews for your business</h1>
+      <p class="pitch">
+        We set up a <strong>direct solution that gets Google reviews</strong> —
+        an NFC card your customers tap, and your review page opens instantly.
+        <strong>If you are near, we will visit your store, or we will ship it to you.</strong>
+      </p>
+    </header>
+
+    <!-- 2. Value points -->
+    <section class="points" aria-label="How it works">
+      <div class="point">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+             stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <rect x="2" y="6" width="20" height="12" rx="2.5"/>
+          <path d="M6 12h.01M10 12h.01M14 12h.01M18 12h.01" stroke-width="2.6"/>
+        </svg>
+        <span><strong>Tap the card</strong> — a customer's phone opens your Google review page instantly. No app, no typing.</span>
+      </div>
+      <div class="point">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+             stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <path d="m21 8-9 5-9-5"/><rect x="2" y="4" width="20" height="16" rx="2.5"/>
+        </svg>
+        <span><strong>We do the setup</strong> — your review link, your message, printed and ready. You just place the card at the counter.</span>
+      </div>
+      <div class="point">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+             stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <path d="M3 11l18-7-7 18-2.5-8.5Z"/>
+        </svg>
+        <span><strong>Nearby?</strong> We visit your store and handle everything in person. Anywhere else, we ship it to your door.</span>
+      </div>
+    </section>
+
+    <!-- 3. Lead form -->
+    <section class="form-card" id="formCard" aria-label="Get the solution">
+      <div class="form-head">
+        <span class="card-label">Get the solution</span>
+        <span class="form-title">Tell us where to send it</span>
+        <span class="form-sub">Takes under a minute. We'll reach out to set everything up.</span>
+      </div>
+
+      <form id="leadForm" novalidate>
+        <div class="field">
+          <label for="name">Your name</label>
+          <input type="text" id="name" name="name" autocomplete="name"
+                 placeholder="Aryan" maxlength="120" required>
+        </div>
+
+        <div class="field">
+          <label for="phone">Phone / WhatsApp</label>
+          <input type="tel" id="phone" name="phone" autocomplete="tel"
+                 inputmode="tel" placeholder="+91 98765 43210" maxlength="24" required>
+        </div>
+
+        <div class="field">
+          <label for="business">Business name</label>
+          <input type="text" id="business" name="business" autocomplete="organization"
+                 placeholder="Pizza Hut — M3M Urbana" maxlength="160" required>
+        </div>
+
+        <div class="field">
+          <label for="city">City / area <span class="opt">(optional)</span></label>
+          <input type="text" id="city" name="city" autocomplete="address-level2"
+                 placeholder="Gurugram" maxlength="120">
+        </div>
+
+        <div class="meeting">
+          <label class="meeting-row" for="meetingToggle">
+            <input type="checkbox" id="meetingToggle" name="meeting">
+            <span class="switch" aria-hidden="true"></span>
+            <span class="meeting-copy">
+              <span class="t">Book a meeting</span>
+              <span class="d">See the solution first — a quick call or a store visit</span>
+            </span>
+          </label>
+          <div class="field" id="meetingOptions" hidden style="margin:12px 0 0;">
+            <label for="meetingSlot">Preferred time</label>
+            <select id="meetingSlot" name="meeting_slot">
+              <option value="">Any time works</option>
+              <option value="Weekday mornings (10am–12pm)">Weekday mornings (10am–12pm)</option>
+              <option value="Weekday afternoons (12–4pm)">Weekday afternoons (12–4pm)</option>
+              <option value="Weekday evenings (4–8pm)">Weekday evenings (4–8pm)</option>
+              <option value="Saturday (10am–2pm)">Saturday (10am–2pm)</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="field">
+          <label for="message">Anything else? <span class="opt">(optional)</span></label>
+          <textarea id="message" name="message" maxlength="1000"
+                    placeholder="e.g. We run a café with ~200 walk-ins a day…"></textarea>
+        </div>
+
+        <button class="cta" id="submitBtn" type="submit">
+          <svg id="iconSend" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+               stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <path d="M3 11l18-7-7 18-2.5-8.5Z"/><path d="M11.5 13.5 21 4"/>
+          </svg>
+          <span class="spinner" id="iconSpinner" hidden></span>
+          <svg id="iconCheck" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+               stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" hidden aria-hidden="true">
+            <path d="M20 6 9 17l-5-5"/>
+          </svg>
+          <span id="ctaLabel">Send my details</span>
+        </button>
+
+        <p class="field-error" id="formError" role="alert" hidden></p>
+        <p class="trust">We'll only use your details to contact you about this.</p>
+      </form>
+    </section>
+
+    <!-- 4. Success state -->
+    <section class="success" id="successCard" hidden aria-live="polite">
+      <div class="badge">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"
+             stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <path d="M20 6 9 17l-5-5"/>
+        </svg>
+      </div>
+      <h2>Got it — you're on the list</h2>
+      <p id="successCopy">We'll reach out shortly to set everything up.</p>
+    </section>
+
+  </main>
+
+  <script type="module">
+    /* =========================================================
+       CONFIG
+       1. Run schema.sql in your Neon project (creates `leads`
+          and the insert-only `leads_writer` role).
+       2. Paste the leads_writer connection string below.
+       Without it, the form falls back to opening a prefilled
+       email (submitEndpoint can also point at your own API).
+       ========================================================= */
+    const CONFIG = {
+      neonConnectionString: "",
+      submitEndpoint: "",     // optional: POST JSON here instead of Neon
+      fallbackEmail: "",      // optional: mailto fallback, e.g. "you@biz.com"
+      successCopyDefault: "We'll reach out shortly to set everything up.",
+      successCopyMeeting: "We'll reach out shortly to confirm your meeting and set everything up.",
+    };
+
+    /* ---------- Elements ---------- */
+    const $ = (id) => document.getElementById(id);
+    const form        = $("leadForm");
+    const submitBtn   = $("submitBtn");
+    const ctaLabel    = $("ctaLabel");
+    const iconSend    = $("iconSend");
+    const iconSpinner = $("iconSpinner");
+    const iconCheck   = $("iconCheck");
+    const formError   = $("formError");
+    const formCard    = $("formCard");
+    const successCard = $("successCard");
+    const successCopy = $("successCopy");
+    const toggle      = $("meetingToggle");
+    const slotField   = $("meetingOptions");
+
+    /* ---------- Draft persistence (survives reload/mistaps) ---------- */
+    const DRAFT_KEY = "pitch-lead-draft";
+    const FIELDS = ["name", "phone", "business", "city", "message", "meetingSlot"];
+
+    function saveDraft() {
+      try {
+        const data = {};
+        FIELDS.forEach((f) => { data[f] = $(f).value; });
+        data.meeting = toggle.checked;
+        localStorage.setItem(DRAFT_KEY, JSON.stringify(data));
+      } catch (_) { /* storage unavailable — ignore */ }
+    }
+
+    function loadDraft() {
+      try {
+        const data = JSON.parse(localStorage.getItem(DRAFT_KEY) || "{}");
+        FIELDS.forEach((f) => {
+          if (data[f]) $(f).value = data[f];
+        });
+        if (data.meeting) {
+          toggle.checked = true;
+          slotField.hidden = false;
+        }
+      } catch (_) { /* ignore */ }
+    }
+
+    form.addEventListener("input", saveDraft);
+
+    /* ---------- Meeting toggle ---------- */
+    toggle.addEventListener("change", () => {
+      slotField.hidden = !toggle.checked;
+      saveDraft();
+    });
+
+    /* ---------- Validation ---------- */
+    function setError(msg) {
+      formError.textContent = msg;
+      formError.hidden = !msg;
+    }
+
+    function validate() {
+      const name     = $("name").value.trim();
+      const phone    = $("phone").value.trim();
+      const business = $("business").value.trim();
+
+      if (!name)     { $("name").focus();     return "Please add your name."; }
+      if (!business) { $("business").focus(); return "Please add your business name."; }
+      const digits = phone.replace(/\D/g, "");
+      if (digits.length < 8) { $("phone").focus(); return "Please add a valid phone number."; }
+      return null;
+    }
+
+    /* ---------- Neon insert ---------- */
+    async function insertIntoNeon(payload) {
+      const { neon } = await import("@neondatabase/serverless");
+      const sql = neon(CONFIG.neonConnectionString);
+      const rows = await sql.query(
+        `INSERT INTO leads
+           (name, phone, business, city, meeting, meeting_slot, message, source, user_agent)
+         VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9)
+         RETURNING id`,
+        [
+          payload.name,
+          payload.phone,
+          payload.business,
+          payload.city || null,
+          payload.meeting,
+          payload.meeting_slot || null,
+          payload.message || null,
+          "pitch-page",
+          navigator.userAgent.slice(0, 300),
+        ]
+      );
+      return rows && rows[0] && rows[0].id;
+    }
+
+    /* ---------- Optional custom endpoint ---------- */
+    async function postToEndpoint(payload) {
+      const res = await fetch(CONFIG.submitEndpoint, {
+        method: "POST",
+        headers: { "content-type": "application/json" },
+        body: JSON.stringify(payload),
+      });
+      if (!res.ok) throw new Error("Endpoint returned " + res.status);
+    }
+
+    /* ---------- Fallbacks ---------- */
+    function mailtoFallback(payload) {
+      const body =
+        `Name: ${payload.name}\n` +
+        `Phone: ${payload.phone}\n` +
+        `Business: ${payload.business}\n` +
+        `City: ${payload.city || "—"}\n` +
+        `Meeting: ${payload.meeting ? "yes" : "no"}` +
+        `${payload.meeting ? ` (${payload.meeting_slot || "any time"})` : ""}\n` +
+        `Message: ${payload.message || "—"}`;
+      location.href =
+        "mailto:" + CONFIG.fallbackEmail +
+        "?subject=" + encodeURIComponent("Google reviews solution — new enquiry") +
+        "&body=" + encodeURIComponent(body);
+    }
+
+    /* ---------- Submit ---------- */
+    let busy = false;
+
+    function setBusy(state) {
+      busy = state;
+      iconSend.hidden    = state !== "sending";
+      iconSpinner.hidden = state !== "sending";
+      ctaLabel.textContent =
+        state === "sending" ? "Sending…" : "Send my details";
+      submitBtn.disabled = state === "sending";
+    }
+
+    form.addEventListener("submit", async (e) => {
+      e.preventDefault();
+      if (busy) return;
+      setError(null);
+
+      const invalid = validate();
+      if (invalid) { setError(invalid); return; }
+
+      const payload = {
+        name:     $("name").value.trim(),
+        phone:    $("phone").value.trim(),
+        business: $("business").value.trim(),
+        city:     $("city").value.trim(),
+        meeting:  toggle.checked,
+        meeting_slot: toggle.checked ? $("meetingSlot").value : "",
+        message:  $("message").value.trim(),
+      };
+
+      setBusy("sending");
+      try {
+        if (CONFIG.neonConnectionString) {
+          await insertIntoNeon(payload);
+        } else if (CONFIG.submitEndpoint) {
+          await postToEndpoint(payload);
+        } else if (CONFIG.fallbackEmail) {
+          mailtoFallback(payload); // hands off to the mail app; keep success state minimal
+          setBusy(false);
+          return;
+        } else {
+          throw new Error("not-configured");
+        }
+
+        setBusy("done");
+        formCard.hidden = true;
+        successCopy.textContent =
+          payload.meeting ? CONFIG.successCopyMeeting : CONFIG.successCopyDefault;
+        successCard.hidden = false;
+        successCard.scrollIntoView({ behavior: "smooth", block: "center" });
+        try { localStorage.removeItem(DRAFT_KEY); } catch (_) {}
+      } catch (err) {
+        console.error("[pitch] submit failed:", err);
+        setBusy(false);
+        setError(
+          err.message === "not-configured"
+            ? "This page isn't connected to the database yet. Please contact us directly."
+            : "Couldn't send right now — please try again in a moment."
+        );
+      }
+    });
+
+    loadDraft();
+  </script>
+</body>
+</html>
