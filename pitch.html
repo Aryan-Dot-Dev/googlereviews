@@ -5,8 +5,9 @@
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
   <meta name="theme-color" content="#fafafa">
   <title>TapCard — More Google reviews, without asking</title>
-  <meta name="description" content="We set your business up with an NFC card. A customer taps it, your Google review page opens on their phone, and a suggested review is ready to paste. Store visit nearby, delivery anywhere in India.">
+  <meta name="description" content="We set your business up with an NFC review card. Your customer taps it, Google opens, and a suggested review is ready to paste. Store visit nearby, delivery anywhere in India.">
   <link rel="canonical" href="https://googlereviews.in/">
+  <link rel="icon" type="image/svg+xml" href="favicon.svg">
   <meta property="og:type" content="website">
   <meta property="og:title" content="TapCard — More Google reviews, without asking">
   <meta property="og:description" content="An NFC card your customers tap. Your Google review page opens instantly, with a suggested review ready to paste.">
@@ -32,6 +33,10 @@
   }
   </script>
 
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@500;600;700;800&display=swap" rel="stylesheet">
+
   <style>
     :root {
       --bg: #fafafa;
@@ -40,18 +45,41 @@
       --text: #17181a;
       --text-secondary: #52565c;
       --text-muted: #9a9ea6;
-      --border: #ebedef;
-      --accent: #188038;          /* primary action — Google green */
+      --border: #e4e6e9;
+      --accent: #188038;
       --accent-hover: #146c2e;
       --accent-soft: #e6f4ea;
+      --mist: #f1f8f3;
       --success: #188038;
       --success-bg: #e6f4ea;
-      --mist: #f1f8f3;
       --danger: #b3261e;
-      --radius: 16px;
-      --radius-sm: 12px;
-      --ease-out: cubic-bezier(0.23, 1, 0.32, 1);
+
+      /* Type scale — Tailwind steps (B1) */
+      --text-xs: 0.75rem;   /* 12 / 16 */
+      --text-sm: 0.875rem;  /* 14 / 20 */
+      --text-base: 1rem;    /* 16 / 24 */
+      --text-lg: 1.125rem;  /* 18 / 28 */
+      --text-xl: 1.25rem;   /* 20 / 28 */
+      --text-2xl: 1.5rem;   /* 24 / 32 */
+      --text-3xl: 1.875rem; /* 30 / 36 */
+      --text-4xl: 2.25rem;  /* 36 / 40 */
+      --text-5xl: 3rem;     /* 48 / 1 */
+
+      /* Spacing — token table (B2) */
+      --s-0: 0px;   --s-25: 2px;  --s-50: 4px;  --s-75: 8px;
+      --s-100: 12px; --s-200: 16px; --s-300: 24px; --s-400: 32px;
+      --s-500: 40px; --s-600: 48px; --s-700: 64px; --s-800: 80px; --s-900: 96px;
+
+      /* Radii — Tailwind steps (B3) */
+      --r-md: 6px;  /* rounded-md */
+      --r-lg: 8px;  /* rounded-lg */
+      --r-xl: 12px; /* rounded-xl */
+      --r-2xl: 16px;/* rounded-2xl */
+      --r-3xl: 24px;/* rounded-3xl */
+      --r-full: 999px;
+
       --ease-fluid: cubic-bezier(0.32, 0.72, 0, 1);
+      --ease-out: cubic-bezier(0.23, 1, 0.32, 1);
     }
 
     * { box-sizing: border-box; margin: 0; padding: 0; }
@@ -61,26 +89,24 @@
     body {
       background: var(--bg);
       color: var(--text);
-      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
-        "Helvetica Neue", Arial, sans-serif;
-      font-size: 16px;
+      font-family: "Manrope", ui-sans-serif, system-ui, sans-serif;
+      font-size: var(--text-base);
       line-height: 1.5;
       -webkit-font-smoothing: antialiased;
     }
 
     ::selection { background: var(--accent-soft); }
 
-    h1, h2, h3 { text-wrap: balance; }
+    h1, h2, h3 { text-wrap: balance; font-weight: 700; }
     p { text-wrap: pretty; }
 
     .wrap {
       max-width: 680px;
       margin: 0 auto;
-      padding: 0 20px;
+      padding: 0 var(--s-200);
     }
-    @media (max-width: 360px) { .wrap { padding: 0 16px; } }
 
-    section { padding: 64px 0; }
+    section { padding: var(--s-700) 0; }
     section.alt { background: var(--mist); }
 
     [hidden] { display: none !important; }
@@ -94,32 +120,32 @@
       top: 0;
       background: var(--surface);
       color: var(--text);
-      padding: 8px 16px;
-      border-radius: 0 0 12px 0;
+      padding: var(--s-75) var(--s-200);
+      border-radius: 0 0 var(--r-xl) 0;
       z-index: 100;
     }
     .skip:focus { left: 0; }
 
-    /* ---------- Floating CTA pill (sticky wayfinding) ---------- */
+    /* ---------- Floating CTA pill ---------- */
     .cta-pill {
       position: fixed;
-      top: calc(12px + env(safe-area-inset-top));
+      top: calc(var(--s-100) + env(safe-area-inset-top));
       left: 50%;
       transform: translateX(-50%);
       z-index: 50;
       display: inline-flex;
       align-items: center;
-      gap: 8px;
-      font-size: 14px;
-      font-weight: 600;
+      gap: var(--s-75);
+      font-size: var(--text-sm);
+      font-weight: 700;
       color: #fff;
       text-decoration: none;
       background: rgba(23, 24, 26, 0.72);
       -webkit-backdrop-filter: blur(20px) saturate(180%);
       backdrop-filter: blur(20px) saturate(180%);
       border: 1px solid rgba(255, 255, 255, 0.14);
-      border-radius: 999px;
-      padding: 10px 18px;
+      border-radius: var(--r-full);
+      padding: var(--s-75) var(--s-200);
       box-shadow: 0 4px 16px rgba(16, 17, 20, 0.18);
       opacity: 0;
       pointer-events: none;
@@ -130,43 +156,44 @@
 
     /* ---------- Hero ---------- */
     .hero {
-      padding: 96px 0 72px;
+      padding: var(--s-900) 0 var(--s-700);
       text-align: center;
     }
 
     .hero h1 {
-      font-size: clamp(36px, 9vw, 48px);
-      line-height: 1.1;
-      font-weight: 700;
+      font-size: var(--text-5xl);
+      line-height: 1.05;
+      font-weight: 800;
       letter-spacing: -0.025em;
       background: linear-gradient(90deg, #000 40%, #666);
       -webkit-background-clip: text;
       background-clip: text;
       -webkit-text-fill-color: transparent;
       color: #000;
-      margin-bottom: 20px;
+      margin: 0 auto var(--s-300);
+      max-width: 680px;
     }
 
     .hero .sub {
-      font-size: 18px;
+      font-size: var(--text-lg);
       line-height: 1.55;
       color: var(--text-secondary);
-      margin: 0 auto 28px;
-      max-width: 560px;
+      margin: 0 auto var(--s-400);
+      max-width: 680px;
     }
 
     .btn {
       display: inline-flex;
       align-items: center;
       justify-content: center;
-      gap: 8px;
-      font-size: 16px;
+      gap: var(--s-75);
+      font-size: var(--text-base);
       font-weight: 600;
       color: #fff;
       background: var(--accent);
       border: 0;
-      border-radius: 14px;
-      padding: 8px 16px;
+      border-radius: var(--r-lg);
+      padding: var(--s-75) var(--s-100);
       min-height: 48px;
       min-width: 48px;
       cursor: pointer;
@@ -183,9 +210,9 @@
     .proof {
       display: inline-flex;
       align-items: center;
-      gap: 8px;
-      margin-top: 20px;
-      font-size: 14px;
+      gap: var(--s-75);
+      margin-top: var(--s-200);
+      font-size: var(--text-sm);
       color: var(--text-muted);
     }
     .proof svg { width: 16px; height: 16px; color: var(--accent); }
@@ -193,70 +220,70 @@
     /* ---------- Hero product mock ---------- */
     .mock {
       width: 300px;
-      margin: 48px auto 0;
+      margin: var(--s-500) auto 0;
       background: var(--surface);
       border: 1px solid var(--border);
-      border-radius: 32px 32px 40px 40px;
+      border-radius: var(--r-3xl);
       box-shadow:
         0 1px 2px rgba(16, 17, 20, 0.05),
         0 24px 48px -16px rgba(16, 17, 20, 0.18);
-      padding: 12px;
+      padding: var(--s-100);
     }
 
     .mock-screen {
-      border-radius: 22px;
+      border-radius: var(--r-2xl); /* nested: 24 - 12 padding = 12 */
       background: var(--bg);
       border: 1px solid var(--border);
-      padding: 20px 16px 24px;
+      padding: var(--s-200) var(--s-200) var(--s-300);
       display: flex;
       flex-direction: column;
       align-items: center;
-      gap: 10px;
+      gap: var(--s-100);
     }
 
     .mock-logo {
       width: 44px;
       height: 44px;
-      border-radius: 12px;
-      background: #17181a; /* matches the real review page's ink logo tile */
+      border-radius: var(--r-xl); /* nested: 12 - 4 gap = 8... formula keeps it 12 */
+      background: #17181a;
       color: #fff;
       display: flex;
       align-items: center;
       justify-content: center;
-      font-size: 15px;
+      font-size: var(--text-base);
       font-weight: 700;
     }
 
-    .mock-name { font-size: 14px; font-weight: 650; }
-    .mock-tag { font-size: 12px; color: var(--text-muted); margin-top: -6px; }
+    .mock-name { font-size: var(--text-sm); font-weight: 700; }
+    .mock-tag { font-size: var(--text-xs); color: var(--text-muted); margin-top: calc(var(--s-50) * -1); }
 
     .mock-card {
       width: 100%;
       background: var(--surface);
       border: 1px solid var(--border);
-      border-radius: var(--radius-sm);
-      padding: 12px;
-      margin-top: 8px;
+      border-radius: var(--r-xl);
+      padding: var(--s-100);
+      margin-top: var(--s-75);
     }
     .mock-card-label {
-      font-size: 9px;
-      font-weight: 600;
+      font-size: 10px;
+      font-weight: 700;
       letter-spacing: 0.08em;
       text-transform: uppercase;
       color: var(--text-muted);
-      margin-bottom: 6px;
+      margin-bottom: var(--s-50);
     }
-    .mock-card-text { font-size: 11px; line-height: 1.55; color: var(--text-secondary); }
+    .mock-card-text { font-size: var(--text-xs); line-height: 1.55; color: var(--text-secondary); }
 
     .mock-cta {
       width: 100%;
-      background: #17181a; /* matches the real review page's ink CTA */
+      background: #17181a;
       color: #fff;
-      font-size: 12px;
-      font-weight: 600;
-      border-radius: 10px;
-      padding: 11px 0;
-      margin-top: 4px;
+      font-size: var(--text-xs);
+      font-weight: 700;
+      border-radius: var(--r-lg);
+      padding: var(--s-100) 0;
+      margin-top: var(--s-50);
       text-align: center;
     }
 
@@ -271,7 +298,7 @@
       position: relative;
       width: 56px;
       height: 56px;
-      margin-top: 6px;
+      margin-top: var(--s-50);
     }
     .tap-dot::before {
       content: "";
@@ -294,71 +321,65 @@
       color: var(--text-secondary);
     }
 
-    /* ---------- Sections ---------- */
+    /* ---------- Section headings ---------- */
     .eyebrow {
-      font-size: 12px;
-      font-weight: 600;
+      font-size: var(--text-xs);
+      font-weight: 700;
       text-transform: uppercase;
       letter-spacing: 0.08em;
       color: var(--accent);
-      margin-bottom: 12px;
+      margin-bottom: var(--s-100);
     }
 
     h2 {
-      font-size: clamp(26px, 6vw, 30px);
+      font-size: var(--text-3xl);
       line-height: 1.2;
-      font-weight: 700;
       letter-spacing: -0.02em;
-      margin-bottom: 28px;
+      margin-bottom: var(--s-400);
     }
 
     /* ---------- Benefits grid ---------- */
     .benefits {
       display: grid;
       grid-template-columns: repeat(2, 1fr);
-      gap: 12px;
+      gap: var(--s-100);
     }
     @media (max-width: 480px) { .benefits { grid-template-columns: 1fr; } }
 
     .benefit {
       background: var(--surface);
       border: 1px solid var(--border);
-      border-radius: var(--radius);
-      box-shadow: 0 1px 2px rgba(16, 17, 20, 0.04);
-      padding: 20px 18px;
+      border-radius: var(--r-2xl);
+      padding: var(--s-300) var(--s-200);
     }
 
     .chip {
       width: 40px;
       height: 40px;
-      border-radius: 12px;
+      border-radius: var(--r-xl);
       background: var(--accent-soft);
       display: flex;
       align-items: center;
       justify-content: center;
-      margin-bottom: 14px;
+      margin-bottom: var(--s-100);
     }
-    .benefit svg {
-      width: 21px;
-      height: 21px;
-      color: var(--accent);
-      display: block;
-    }
+    .benefit svg { width: 21px; height: 21px; color: var(--accent); display: block; }
 
-    .benefit h3 { font-size: 16px; font-weight: 650; margin-bottom: 6px; }
-    .benefit p { font-size: 14px; line-height: 1.55; color: var(--text-secondary); }
+    .benefit h3 { font-size: var(--text-base); margin-bottom: var(--s-50); }
+    .benefit p { font-size: var(--text-sm); line-height: 1.55; color: var(--text-secondary); }
+
+    /* ---------- Problem section ---------- */
+    .problem-copy { font-size: var(--text-lg); line-height: 1.6; color: var(--text-secondary); }
+    .problem-copy strong { color: var(--text); font-weight: 700; }
 
     /* ---------- Tagline reveal ---------- */
-    .tagline {
-      padding: 88px 0;
-      text-align: center;
-    }
+    .tagline { padding: var(--s-800) 0; text-align: center; }
     .tagline p {
-      font-size: clamp(30px, 7vw, 48px);
-      line-height: 1.18;
-      font-weight: 700;
-      letter-spacing: -0.025em;
-      max-width: 620px;
+      font-size: var(--text-4xl);
+      line-height: 1.15;
+      font-weight: 800;
+      letter-spacing: -0.02em;
+      max-width: 680px;
       margin: 0 auto;
     }
     .tagline .w {
@@ -370,21 +391,15 @@
     .tagline .w.acc.on { color: var(--accent); }
 
     /* ---------- Steps ---------- */
-    .steps {
-      display: flex;
-      flex-direction: column;
-      gap: 12px;
-      counter-reset: step;
-    }
+    .steps { display: flex; flex-direction: column; gap: var(--s-100); counter-reset: step; }
 
     .step {
       background: var(--surface);
       border: 1px solid var(--border);
-      border-radius: var(--radius);
-      box-shadow: 0 1px 2px rgba(16, 17, 20, 0.04);
-      padding: 20px 18px;
+      border-radius: var(--r-2xl);
+      padding: var(--s-300) var(--s-200);
       display: flex;
-      gap: 16px;
+      gap: var(--s-200);
       align-items: flex-start;
     }
 
@@ -392,12 +407,11 @@
       counter-increment: step;
       width: 28px;
       height: 28px;
-      border-radius: 9px;
+      border-radius: var(--r-lg);
       background: var(--accent-soft);
-      border: 0;
       color: var(--accent);
-      font-size: 13px;
-      font-weight: 650;
+      font-size: var(--text-sm);
+      font-weight: 700;
       display: flex;
       align-items: center;
       justify-content: center;
@@ -405,24 +419,41 @@
     }
     .step-num::before { content: counter(step); }
 
-    .step h3 { font-size: 16px; font-weight: 650; margin-bottom: 6px; }
-    .step p { font-size: 14px; line-height: 1.55; color: var(--text-secondary); }
+    .step h3 { font-size: var(--text-base); margin-bottom: var(--s-50); }
+    .step p { font-size: var(--text-sm); line-height: 1.55; color: var(--text-secondary); }
 
     .step-link {
       color: var(--accent);
-      font-weight: 550;
+      font-weight: 600;
       text-decoration: underline;
       text-decoration-color: rgba(24, 128, 56, 0.35);
       text-underline-offset: 3px;
     }
     .step-link:hover { text-decoration-color: rgba(24, 128, 56, 0.8); }
 
+    /* ---------- Who it's for ---------- */
+    .who {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: var(--s-100);
+    }
+    @media (max-width: 560px) { .who { grid-template-columns: 1fr; } }
+
+    .who-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--r-2xl);
+      padding: var(--s-200);
+      text-align: center;
+    }
+    .who-emoji { font-size: var(--text-2xl); display: block; margin-bottom: var(--s-50); }
+    .who-card h3 { font-size: var(--text-sm); }
+    .who-card p { font-size: var(--text-xs); color: var(--text-secondary); margin-top: var(--s-25); }
+
     /* ---------- FAQ ---------- */
     .faq { display: flex; flex-direction: column; }
 
-    .faq details {
-      border-bottom: 1px solid var(--border);
-    }
+    .faq details { border-bottom: 1px solid var(--border); }
     .faq details:last-child { border-bottom: 0; }
 
     .faq summary {
@@ -431,14 +462,14 @@
       display: flex;
       align-items: center;
       justify-content: space-between;
-      gap: 16px;
-      padding: 18px 0;
-      font-size: 16px;
+      gap: var(--s-200);
+      padding: var(--s-300) 0;
+      font-size: var(--text-base);
       font-weight: 600;
       transition: color 150ms var(--ease-out);
     }
     .faq summary::-webkit-details-marker { display: none; }
-    .faq summary:focus-visible { outline: 2px solid rgba(23, 24, 26, 0.5); outline-offset: 2px; border-radius: 4px; }
+    .faq summary:focus-visible { outline: 2px solid rgba(24, 128, 56, 0.5); outline-offset: 2px; border-radius: var(--r-md); }
     .faq summary:hover { color: var(--accent); }
 
     .faq .chev {
@@ -451,69 +482,79 @@
     .faq details[open] .chev { transform: rotate(180deg); }
 
     .faq .answer {
-      font-size: 14.5px;
+      font-size: var(--text-sm);
       line-height: 1.6;
       color: var(--text-secondary);
-      padding: 0 32px 18px 0;
+      padding: 0 var(--s-400) var(--s-300) 0;
     }
 
-    /* ---------- Lead form section ---------- */
+    /* ---------- Lead form ---------- */
     .lead {
       background: var(--surface);
       border-top: 1px solid var(--border);
       border-bottom: 1px solid var(--border);
     }
 
+    .risk {
+      display: flex;
+      flex-wrap: wrap;
+      gap: var(--s-75) var(--s-300);
+      font-size: var(--text-sm);
+      color: var(--text-secondary);
+      margin-bottom: var(--s-300);
+    }
+    .risk span { display: inline-flex; align-items: center; gap: var(--s-50); }
+    .risk svg { width: 16px; height: 16px; color: var(--accent); }
+
     .form-card {
       background: var(--bg);
       border: 1px solid var(--border);
-      border-radius: 20px;
-      padding: 28px 22px;
+      border-radius: var(--r-3xl);
+      padding: var(--s-400) var(--s-200);
     }
 
-    .field { margin-bottom: 16px; }
+    .field { margin-bottom: var(--s-200); }
 
     label {
       display: block;
-      font-size: 14px;
+      font-size: var(--text-sm);
       font-weight: 600;
-      margin-bottom: 6px;
+      margin-bottom: var(--s-50);
     }
     label .opt { font-weight: 500; color: var(--text-muted); }
 
     input[type="text"], input[type="tel"], textarea, select {
       width: 100%;
       font: inherit;
-      font-size: 16px;
+      font-size: var(--text-base);
       line-height: 1.5;
       color: #26282c;
       background: var(--surface);
       border: 1px solid var(--border);
-      border-radius: var(--radius-sm);
-      padding: 12px 14px;
+      border-radius: var(--r-xl);
+      padding: var(--s-100) var(--s-100);
       transition: border-color 150ms var(--ease-out), box-shadow 150ms var(--ease-out);
     }
     textarea { min-height: 84px; resize: vertical; }
 
     input:focus, textarea:focus, select:focus {
-      outline: 2px solid rgba(23, 24, 26, 0.15);
+      outline: 2px solid rgba(24, 128, 56, 0.25);
       outline-offset: -1px;
-      border-color: #b9bdc4;
+      border-color: rgba(24, 128, 56, 0.45);
     }
     input::placeholder, textarea::placeholder { color: var(--text-muted); }
 
-    /* Meeting toggle */
     .meeting {
       border: 1px solid var(--border);
-      border-radius: var(--radius-sm);
+      border-radius: var(--r-xl);
       background: var(--surface);
-      padding: 14px;
-      margin: 2px 0 16px;
+      padding: var(--s-100);
+      margin: var(--s-25) 0 var(--s-200);
     }
     .meeting-row {
       display: flex;
       align-items: center;
-      gap: 12px;
+      gap: var(--s-100);
       cursor: pointer;
       -webkit-user-select: none;
       user-select: none;
@@ -523,7 +564,7 @@
     .switch {
       width: 44px;
       height: 26px;
-      border-radius: 13px;
+      border-radius: var(--r-full);
       background: #d9dbde;
       position: relative;
       flex-shrink: 0;
@@ -548,60 +589,58 @@
       outline-offset: 2px;
     }
     .meeting-copy { display: flex; flex-direction: column; gap: 1px; }
-    .meeting-copy .t { font-size: 14px; font-weight: 600; }
-    .meeting-copy .d { font-size: 12.5px; color: var(--text-secondary); }
+    .meeting-copy .t { font-size: var(--text-sm); font-weight: 700; }
+    .meeting-copy .d { font-size: var(--text-xs); color: var(--text-secondary); }
 
-    #meetingSlotField { margin: 12px 0 0; }
+    #meetingSlotField { margin: var(--s-100) 0 0; }
 
     .field-error {
-      font-size: 13px;
+      font-size: var(--text-sm);
       color: var(--danger);
-      margin-top: 10px;
+      margin-top: var(--s-100);
       text-align: center;
     }
 
     .trust {
-      font-size: 12.5px;
+      font-size: var(--text-xs);
       color: var(--text-muted);
       text-align: center;
-      margin-top: 12px;
+      margin-top: var(--s-100);
     }
 
-    .spinner {
-      width: 18px;
-      height: 18px;
-      border: 2px solid rgba(255, 255, 255, 0.35);
-      border-top-color: #fff;
+    /* Loading: dots (compliant static state) */
+    .dots { display: inline-flex; gap: 4px; align-items: center; }
+    .dots i {
+      width: 6px;
+      height: 6px;
       border-radius: 50%;
-      animation: spin 0.7s linear infinite;
+      background: #fff;
+      animation: dotBounce 1s infinite var(--ease-fluid);
     }
-    @keyframes spin { to { transform: rotate(360deg); } }
+    .dots i:nth-child(2) { animation-delay: 120ms; }
+    .dots i:nth-child(3) { animation-delay: 240ms; }
+    @keyframes dotBounce {
+      0%, 60%, 100% { transform: translateY(0); opacity: 0.45; }
+      30% { transform: translateY(-4px); opacity: 1; }
+    }
 
-    /* Form <-> success crossfade */
-    .fade-swap {
-      display: grid;
-    }
+    .fade-swap { display: grid; }
     .fade-swap > * {
       grid-area: 1 / 1;
       transition: opacity 250ms var(--ease-out), transform 250ms var(--ease-out);
     }
-    .fade-swap .out {
-      opacity: 0;
-      transform: translateY(6px);
-      pointer-events: none;
-    }
+    .fade-swap .out { opacity: 0; transform: translateY(6px); pointer-events: none; }
 
-    /* Success card */
     .success-card {
       background: var(--surface);
       border: 1px solid var(--border);
-      border-radius: 20px;
-      padding: 40px 24px;
+      border-radius: var(--r-3xl);
+      padding: var(--s-500) var(--s-300);
       display: flex;
       flex-direction: column;
       align-items: center;
       text-align: center;
-      gap: 10px;
+      gap: var(--s-100);
     }
     .success-card .badge {
       width: 52px;
@@ -612,51 +651,40 @@
       display: flex;
       align-items: center;
       justify-content: center;
-      margin-bottom: 4px;
+      margin-bottom: var(--s-50);
     }
     .success-card .badge svg { width: 26px; height: 26px; }
-    .success-card h3 { font-size: 20px; font-weight: 700; letter-spacing: -0.01em; }
-    .success-card p { font-size: 14px; line-height: 1.6; color: var(--text-secondary); max-width: 34ch; }
+    .success-card h3 { font-size: var(--text-xl); }
+    .success-card p { font-size: var(--text-sm); line-height: 1.6; color: var(--text-secondary); max-width: 34ch; }
 
     /* ---------- Footer ---------- */
-    footer {
-      padding: 40px 0 calc(40px + env(safe-area-inset-bottom));
-    }
+    footer { padding: var(--s-500) 0 calc(var(--s-500) + env(safe-area-inset-bottom)); }
     .foot {
       display: flex;
       flex-direction: column;
       align-items: center;
-      gap: 12px;
+      gap: var(--s-100);
       text-align: center;
     }
-    .foot-brand { font-size: 14px; font-weight: 650; }
-    .foot-links { display: flex; gap: 20px; }
-    .foot-links a {
-      font-size: 13px;
-      color: var(--text-muted);
-      text-decoration: none;
-    }
+    .foot-brand { font-size: var(--text-sm); font-weight: 700; }
+    .foot-links { display: flex; gap: var(--s-300); }
+    .foot-links a { font-size: var(--text-sm); color: var(--text-muted); text-decoration: none; }
     .foot-links a:hover { color: var(--text); text-decoration: underline; }
-    .foot-copy { font-size: 12.5px; color: var(--text-muted); }
+    .foot-copy { font-size: var(--text-xs); color: var(--text-muted); }
 
-    /* ---------- Scroll reveals ---------- */
+    /* ---------- Scroll reveals (B7) ---------- */
     .reveal {
       opacity: 0;
-      transform: translateY(24px);
-      filter: blur(4px);
+      transform: translateY(64px);
+      filter: blur(12px);
       transition:
-        opacity 700ms var(--ease-fluid),
-        transform 700ms var(--ease-fluid),
-        filter 700ms var(--ease-fluid);
+        opacity 800ms var(--ease-fluid),
+        transform 800ms var(--ease-fluid),
+        filter 800ms var(--ease-fluid);
       will-change: opacity, transform;
     }
-    .reveal.in {
-      opacity: 1;
-      transform: none;
-      filter: none;
-    }
+    .reveal.in { opacity: 1; transform: none; filter: none; }
 
-    /* Stagger children inside grids */
     .reveal-group .reveal:nth-child(2) { transition-delay: 80ms; }
     .reveal-group .reveal:nth-child(3) { transition-delay: 160ms; }
     .reveal-group .reveal:nth-child(4) { transition-delay: 240ms; }
@@ -674,6 +702,7 @@
       .tap-dot::before { animation: none; opacity: 0; }
       .fade-swap > * { transition-duration: 150ms; transform: none; }
       .cta-pill { transition-duration: 150ms; }
+      .dots i { animation: none; opacity: 0.7; }
     }
     @media (prefers-reduced-transparency: reduce) {
       .cta-pill { background: #17181a; -webkit-backdrop-filter: none; backdrop-filter: none; }
@@ -692,14 +721,15 @@
       <div class="wrap">
         <h1>More Google reviews,<br>without asking</h1>
         <p class="sub">
-          We set your business up with an NFC card. A customer taps it, your Google
-          review page opens on their phone, and a suggested review is ready to paste.
+          We set your business up with an NFC review card. Your customer taps it,
+          Google opens, and a suggested review is ready to paste.
         </p>
         <a class="btn" href="#lead">Get your review card</a>
+        <br>
         <p class="proof">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"
                stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg>
-          Works with any Google Business Profile · No app for customers to install
+          Works with any Google Business Profile. No app for your customers.
         </p>
 
         <div class="mock" aria-hidden="true">
@@ -725,40 +755,66 @@
       </div>
     </header>
 
+    <!-- ================= Problem ================= -->
+    <section class="alt" aria-labelledby="problem-h">
+      <div class="wrap reveal-group">
+        <p class="eyebrow reveal">The problem</p>
+        <h2 id="problem-h" class="reveal">Happy customers forget to review</h2>
+        <p class="problem-copy reveal">
+          They mean to. They get in the car, life happens, and by evening the
+          thought is gone. Meanwhile the shop two lanes over, with the review card
+          on its counter, keeps collecting them. <strong>The gap is not
+          satisfaction. It is the four taps between feeling and posting.</strong>
+        </p>
+      </div>
+    </section>
+
     <!-- ================= Benefits ================= -->
-    <section class="alt" aria-labelledby="benefits-h">
+    <section aria-labelledby="benefits-h">
       <div class="wrap reveal-group">
         <p class="eyebrow reveal">Why it works</p>
         <h2 id="benefits-h" class="reveal">Reviews happen at the table,<br>not days later</h2>
         <div class="benefits">
           <article class="benefit reveal">
-            <div class="chip"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
-                 stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-              <path d="M12 19v3"/><path d="m8 22 4-3 4 3"/><rect x="4" y="2" width="16" height="14" rx="3"/>
-              <path d="M8.5 8.5 10 10l3.5-4"/>              </svg></div>
+            <div class="chip">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                   stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <path d="M12 19v3"/><path d="m8 22 4-3 4 3"/><rect x="4" y="2" width="16" height="14" rx="3"/>
+                <path d="M8.5 8.5 10 10l3.5-4"/>
+              </svg>
+            </div>
             <h3>Reviews without asking</h3>
             <p>Staff never have to bring it up. The card sits at the counter and the tap does the asking.</p>
           </article>
           <article class="benefit reveal">
-            <div class="chip"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
-                 stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-              <rect x="8" y="2" width="8" height="4" rx="1"/>
-              <path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"/>
-              <path d="m9 13 2 2 4-4"/>              </svg></div>
+            <div class="chip">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                   stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <rect x="8" y="2" width="8" height="4" rx="1"/>
+                <path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"/>
+                <path d="m9 13 2 2 4-4"/>
+              </svg>
+            </div>
             <h3>Ready to paste</h3>
             <p>A well written review is already typed. One tap copies it and opens Google.</p>
           </article>
           <article class="benefit reveal">
-            <div class="chip"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
-                 stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-              <path d="M14 11a4 4 0 1 0-8 0v3a2 2 0 0 1-2 2h8"/><path d="M10 19h9a2 2 0 0 0 2-2v-6"/><path d="m18 8 3 3-3 3"/>              </svg></div>
+            <div class="chip">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                   stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <path d="M14 11a4 4 0 1 0-8 0v3a2 2 0 0 1-2 2h8"/><path d="M10 19h9a2 2 0 0 0 2-2v-6"/><path d="m18 8 3 3-3 3"/>
+              </svg>
+            </div>
             <h3>Set up for you</h3>
             <p>We find your review link, write the suggested review, print the card and set it up.</p>
           </article>
           <article class="benefit reveal">
-            <div class="chip"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
-                 stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-              <path d="M3 11l18-7-7 18-2.5-8.5Z"/>              </svg></div>
+            <div class="chip">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                   stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <path d="M3 11l18-7-7 18-2.5-8.5Z"/>
+              </svg>
+            </div>
             <h3>Visit or delivery</h3>
             <p>Nearby? We visit your store and handle everything in person. Anywhere else, we ship it.</p>
           </article>
@@ -804,8 +860,33 @@
       </div>
     </section>
 
+    <!-- ================= Who it's for ================= -->
+    <section class="alt" aria-labelledby="who-h">
+      <div class="wrap reveal-group">
+        <p class="eyebrow reveal">Who it is for</p>
+        <h2 id="who-h" class="reveal">Built for counters, tables<br>and reception desks</h2>
+        <div class="who">
+          <article class="who-card reveal">
+            <span class="who-emoji" aria-hidden="true">☕</span>
+            <h3>Cafés and restaurants</h3>
+            <p>Place it with the bill. Captures the moment the meal was enjoyed.</p>
+          </article>
+          <article class="who-card reveal">
+            <span class="who-emoji" aria-hidden="true">💇</span>
+            <h3>Salons and studios</h3>
+            <p>Hand it over at checkout while the glow is still fresh.</p>
+          </article>
+          <article class="who-card reveal">
+            <span class="who-emoji" aria-hidden="true">🩺</span>
+            <h3>Clinics and services</h3>
+            <p>Keep it at reception. Patients tap on the way out.</p>
+          </article>
+        </div>
+      </div>
+    </section>
+
     <!-- ================= FAQ ================= -->
-    <section class="alt" aria-labelledby="faq-h">
+    <section aria-labelledby="faq-h">
       <div class="wrap reveal-group">
         <p class="eyebrow reveal">Questions</p>
         <h2 id="faq-h" class="reveal">Before you commit</h2>
@@ -874,6 +955,21 @@
         <p class="eyebrow reveal">Get started</p>
         <h2 id="lead-h" class="reveal">Get your review card</h2>
 
+        <div class="risk reveal">
+          <span>
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg>
+            Pay after you see the demo
+          </span>
+          <span>
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg>
+            No monthly fee
+          </span>
+          <span>
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg>
+            Setup handled for you
+          </span>
+        </div>
+
         <div class="fade-swap" id="fadeSwap">
           <div class="form-card" id="formCard">
             <form id="leadForm" novalidate>
@@ -883,7 +979,7 @@
                        placeholder="Aryan" maxlength="120" required>
               </div>
               <div class="field">
-                <label for="phone">Phone / WhatsApp</label>
+                <label for="phone">Phone or WhatsApp</label>
                 <input type="tel" id="phone" name="phone" autocomplete="tel"
                        inputmode="tel" placeholder="+91 98765 43210" maxlength="24" required>
               </div>
@@ -893,7 +989,7 @@
                        placeholder="Pizza Hut — M3M Urbana" maxlength="160" required>
               </div>
               <div class="field">
-                <label for="city">City / area <span class="opt">(optional)</span></label>
+                <label for="city">City or area <span class="opt">(optional)</span></label>
                 <input type="text" id="city" name="city" autocomplete="address-level2"
                        placeholder="Gurugram" maxlength="120">
               </div>
@@ -904,7 +1000,7 @@
                   <span class="switch" aria-hidden="true"></span>
                   <span class="meeting-copy">
                     <span class="t">Book a meeting</span>
-                    <span class="d">See the solution first — a quick call or a store visit</span>
+                    <span class="d">See the solution first. A quick call or a store visit</span>
                   </span>
                 </label>
                 <div class="field" id="meetingSlotField" hidden>
@@ -930,7 +1026,7 @@
                      stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
                   <path d="M3 11l18-7-7 18-2.5-8.5Z"/><path d="M11.5 13.5 21 4"/>
                 </svg>
-                <span class="spinner" id="iconSpinner" hidden></span>
+                <span class="dots" id="iconDots" hidden><i></i><i></i><i></i></span>
                 <span id="ctaLabel">Send my details</span>
               </button>
 
@@ -946,7 +1042,7 @@
                 <path d="M20 6 9 17l-5-5"/>
               </svg>
             </div>
-            <h3>Got it — you're on the list</h3>
+            <h3>Got it. You're on the list</h3>
             <p id="successCopy">We'll reach out shortly to set everything up.</p>
           </div>
         </div>
@@ -959,6 +1055,7 @@
         <div class="foot-brand">TapCard</div>
         <div class="foot-links">
           <a href="privacy.html">Privacy</a>
+          <a href="terms.html">Terms</a>
           <a href="index.html">Demo review page</a>
         </div>
         <div class="foot-copy">© <span id="year">2026</span> TapCard. All rights reserved.</div>
@@ -985,7 +1082,7 @@
 
     const $ = (id) => document.getElementById(id);
 
-    /* ---------- Reveal on scroll (IntersectionObserver) ---------- */
+    /* ---------- Reveal on scroll (IntersectionObserver, B7) ---------- */
     const reducedMotion = matchMedia("(prefers-reduced-motion: reduce)").matches;
 
     const revealEls = document.querySelectorAll(".reveal");
@@ -1003,14 +1100,14 @@
       revealEls.forEach((el) => io.observe(el));
     }
 
-    /* ---------- Sticky CTA pill: appears after the hero ---------- */
+    /* ---------- Sticky CTA pill ---------- */
     const pill = $("ctaPill");
     const heroSentinel = new IntersectionObserver(([entry]) => {
       pill.classList.toggle("show", !entry.isIntersecting);
     }, { threshold: 0 });
     heroSentinel.observe(document.querySelector(".hero"));
 
-    /* ---------- Tagline word reveal ---------- */
+    /* ---------- Tagline word reveal (B11) ---------- */
     (function tagline() {
       const p = $("taglineText");
       const frag = document.createDocumentFragment();
@@ -1034,21 +1131,42 @@
       p.textContent = "";
       p.appendChild(frag);
 
-      const spans = p.querySelectorAll(".w");
+      const spans = Array.from(p.querySelectorAll(".w"));
+
       if (reducedMotion) {
         spans.forEach((span) => span.classList.add("on"));
         return;
       }
 
-      // Reveal words one by one, staggered, once the block enters the viewport —
-      // like reading them. (Word-by-word scroll activation can strand words
-      // that never cross the trigger line on short viewports.)
+      /* Per-word trigger-line activation (B11): each word turns on when its
+         own position crosses the trigger line, checked on a rAF-throttled
+         scroll read. No unthrottled scroll listener. */
+      let ticking = false;
+      const triggerLine = () => innerHeight * 0.85;
+
+      function update() {
+        ticking = false;
+        const line = triggerLine();
+        for (const span of spans) {
+          if (span.classList.contains("on")) continue;
+          if (span.getBoundingClientRect().top < line) span.classList.add("on");
+        }
+      }
+
+      addEventListener("scroll", () => {
+        if (!ticking) {
+          ticking = true;
+          requestAnimationFrame(update);
+        }
+      }, { passive: true });
+
+      /* Also run once when the block enters, so words start flowing
+         even if the user has stopped scrolling exactly there. */
       const blockIo = new IntersectionObserver(([entry]) => {
-        if (!entry.isIntersecting) return;
-        blockIo.disconnect();
-        spans.forEach((span, idx) => {
-          setTimeout(() => span.classList.add("on"), 90 * idx);
-        });
+        if (entry.isIntersecting) {
+          update();
+          blockIo.disconnect();
+        }
       }, { threshold: 0.5 });
       blockIo.observe(p);
     })();
@@ -1138,8 +1256,8 @@
     function setBusy(state) {
       busy = state === "sending";
       $("iconSend").hidden = state === "sending";
-      $("iconSpinner").hidden = state !== "sending";
-      $("ctaLabel").textContent = state === "sending" ? "Sending…" : "Send my details";
+      $("iconDots").hidden = state !== "sending";
+      $("ctaLabel").textContent = state === "sending" ? "Sending" : "Send my details";
       $("submitBtn").disabled = state === "sending";
     }
 
@@ -1183,7 +1301,7 @@
         setError(
           err.message === "not-configured"
             ? "This page isn't connected to the database yet. Please contact us directly."
-            : "Couldn't send right now — please try again in a moment."
+            : "Couldn't send right now. Please try again in a moment."
         );
       }
     });

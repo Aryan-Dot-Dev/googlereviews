@@ -4,9 +4,8 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
   <meta name="theme-color" content="#fafafa">
-  <title>Privacy — TapCard</title>
+  <title>Terms — TapCard</title>
   <meta name="robots" content="noindex">
-  <link rel="icon" type="image/svg+xml" href="favicon.svg">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@500;600;700;800&display=swap" rel="stylesheet">
@@ -20,7 +19,6 @@
       --border: #e4e6e9;
       --accent: #188038;
       --accent-soft: #e6f4ea;
-      --radius: 16px;
     }
     * { box-sizing: border-box; margin: 0; padding: 0; }
     body {
@@ -31,11 +29,8 @@
       line-height: 1.5;
       -webkit-font-smoothing: antialiased;
     }
-    .page {
-      max-width: 640px;
-      margin: 0 auto;
-      padding: 48px 20px 64px;
-    }
+    ::selection { background: var(--accent-soft); }
+    .page { max-width: 640px; margin: 0 auto; padding: 48px 20px 64px; }
     h1 { font-size: 30px; line-height: 1.2; letter-spacing: -0.02em; margin-bottom: 8px; }
     .updated { font-size: 14px; color: var(--text-muted); margin-bottom: 32px; }
     h2 { font-size: 18px; margin: 32px 0 10px; }
@@ -56,35 +51,39 @@
 <body>
   <div class="page">
     <a class="back" href="index.html">&larr; Back</a>
-    <h1>Privacy</h1>
+    <h1>Terms</h1>
     <p class="updated">Last updated September 2026</p>
 
-    <h2>What we collect</h2>
-    <p>When you send an enquiry through our site, we store the details you enter:
-      your name, phone number, business name, city, and anything you write in the
-      message field. We also store your browser's user agent string for support
-      diagnostics.</p>
+    <h2>The service</h2>
+    <p>TapCard provides businesses with an NFC card and a hosted review page.
+      Tapping the card opens the business's own Google review form with a
+      suggested review that the customer can edit or rewrite before posting.</p>
 
-    <h2>What we don't collect</h2>
-    <p>We don't run advertising trackers on this site. Customer review pages
-      opened by NFC taps don't collect anything at all — the review text is copied
-      on the customer's own phone and posted to Google directly.</p>
+    <h2>What we don't do</h2>
+    <ul>
+      <li>We never post reviews on anyone's behalf.</li>
+      <li>We never suggest ratings or write reviews that misrepresent an experience.</li>
+      <li>We never ask customers for a specific star rating.</li>
+    </ul>
+    <p>The customer stays in full control of what they post. The card only makes
+      Google's own review form easier to reach.</p>
 
-    <h2>How your data is used</h2>
-    <p>Only to contact you about your enquiry and provide the review card service.
-      We don't sell or share your details with anyone else.</p>
+    <h2>Customer responsibility</h2>
+    <p>Businesses agree to use the card as a convenience for genuine customers
+      and to follow Google's review policies. Encouraging reviews in exchange for
+      payment, discounts or perks is not allowed.</p>
 
-    <h2>Reviews posted by customers</h2>
-    <p>Reviews are posted by customers to their own Google accounts. We never post
-      reviews on anyone's behalf and we don't have access to the content of reviews
-      customers write or edit.</p>
+    <h2>Payment and delivery</h2>
+    <p>Pricing is flat per location with no recurring fee. We confirm the exact
+      price before any payment is due, and you see a live demo of your review
+      page before you pay.</p>
 
-    <h2>Data storage and deletion</h2>
-    <p>Enquiries are stored in a managed cloud database. Ask us at any time and
-      we'll delete your enquiry.</p>
+    <h2>Data</h2>
+    <p>Enquiry details are used only to contact you about your order. See the
+      <a href="privacy.html">privacy policy</a> for the full picture.</p>
 
     <h2>Contact</h2>
-    <p>Questions about this policy: reach us through the enquiry form on the
+    <p>Questions about these terms: reach us through the enquiry form on the
       <a href="index.html">main page</a>.</p>
   </div>
 </body>

@@ -1,0 +1,97 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#fafafa">
+  <title>Page not found — TapCard</title>
+  <meta name="robots" content="noindex">
+  <link rel="icon" type="image/svg+xml" href="favicon.svg">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@500;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg: #fafafa;
+      --surface: #ffffff;
+      --text: #17181a;
+      --text-secondary: #52565c;
+      --text-muted: #9a9ea6;
+      --border: #e4e6e9;
+      --accent: #188038;
+      --accent-soft: #e6f4ea;
+      --r-2xl: 16px;
+      --r-lg: 8px;
+      --ease-fluid: cubic-bezier(0.32, 0.72, 0, 1);
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: "Manrope", ui-sans-serif, system-ui, sans-serif;
+      font-size: 16px;
+      line-height: 1.5;
+      -webkit-font-smoothing: antialiased;
+    }
+    .page {
+      min-height: 100svh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 24px;
+    }
+    .card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--r-2xl);
+      box-shadow: 0 1px 2px rgba(16, 17, 20, 0.04);
+      padding: 48px 40px;
+      text-align: center;
+      max-width: 420px;
+    }
+    .badge {
+      width: 56px;
+      height: 56px;
+      border-radius: 14px;
+      background: var(--accent-soft);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin: 0 auto 20px;
+    }
+    .badge svg { width: 28px; height: 28px; color: var(--accent); }
+    h1 { font-size: 30px; line-height: 1.2; letter-spacing: -0.02em; margin-bottom: 10px; }
+    p { font-size: 15px; line-height: 1.6; color: var(--text-secondary); margin-bottom: 28px; }
+    .btn {
+      display: inline-block;
+      font-size: 16px;
+      font-weight: 600;
+      color: #fff;
+      background: var(--accent);
+      border-radius: var(--r-lg);
+      padding: 8px 16px;
+      min-height: 48px;
+      line-height: 32px;
+      text-decoration: none;
+      transition: background-color 150ms var(--ease-fluid), transform 160ms var(--ease-fluid);
+    }
+    .btn:hover { background: #146c2e; }
+    .btn:active { transform: scale(0.96); }
+  </style>
+</head>
+<body>
+  <div class="page">
+    <div class="card">
+      <div class="badge">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+             stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <circle cx="12" cy="12" r="9"/><path d="M12 8v4"/><path d="M12 16h.01"/>
+        </svg>
+      </div>
+      <h1>Page not found</h1>
+      <p>That link doesn't lead anywhere. If you tapped an NFC card and landed here, please let the staff know.</p>
+      <a class="btn" href="/">Back to TapCard</a>
+    </div>
+  </div>
+</body>
+</html>
