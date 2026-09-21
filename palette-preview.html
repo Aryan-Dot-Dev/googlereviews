@@ -1,0 +1,146 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>TapCard — palette directions</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: "Outfit", ui-sans-serif, system-ui, sans-serif;
+      background: #e9e9e7;
+      color: #1c1917;
+      padding: 48px 24px 80px;
+    }
+    .head { max-width: 1080px; margin: 0 auto 32px; }
+    .head h1 { font-size: 1.5rem; font-weight: 600; letter-spacing: -0.02em; }
+    .head p { font-size: 0.875rem; color: #55534e; margin-top: 4px; }
+    .grid {
+      max-width: 1080px; margin: 0 auto;
+      display: grid; grid-template-columns: 1fr 1fr; gap: 20px;
+    }
+    @media (max-width: 860px) { .grid { grid-template-columns: 1fr; } }
+
+    /* Each board is the same mini-hero, different token values */
+    .board {
+      border-radius: 24px; overflow: hidden;
+      border: 1px solid rgba(0,0,0,0.08);
+      background: var(--bg);
+      color: var(--ink);
+      box-shadow: 0 8px 32px rgba(28,25,23,0.08);
+    }
+    .tag {
+      font-family: "Geist Mono", ui-monospace, monospace;
+      font-size: 11px; letter-spacing: 0.08em; text-transform: uppercase;
+      padding: 12px 20px; border-bottom: 1px solid var(--border);
+      color: var(--sub); display: flex; justify-content: space-between; align-items: center;
+      background: var(--surface);
+    }
+    .swatches { display: flex; gap: 6px; }
+    .sw { width: 16px; height: 16px; border-radius: 5px; border: 1px solid rgba(0,0,0,0.12); }
+    .mini { padding: 28px 24px 24px; background: var(--bg); }
+    .mini .brand { display: inline-flex; align-items: center; gap: 6px; font-size: 13px; font-weight: 600; margin-bottom: 18px; }
+    .mini .mark { width: 22px; height: 22px; border-radius: 7px; background: var(--accent); color: var(--on-accent); display: inline-flex; align-items: center; justify-content: center; font-size: 13px; }
+    .mini h2 { font-size: clamp(1.4rem, 2.6vw, 1.9rem); line-height: 1.08; letter-spacing: -0.025em; font-weight: 600; margin-bottom: 10px; max-width: 16ch; }
+    .mini .sub { font-size: 0.875rem; line-height: 1.5; color: var(--sub); margin-bottom: 18px; max-width: 42ch; }
+    .btns { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 18px; }
+    .btn {
+      display: inline-flex; align-items: center; gap: 6px;
+      font-size: 0.875rem; font-weight: 600; text-decoration: none;
+      padding: 9px 16px; border-radius: 12px;
+      background: var(--accent); color: var(--on-accent);
+    }
+    .btn.ghost { background: var(--surface); color: var(--ink); border: 1px solid var(--border-strong); }
+    .card {
+      background: var(--soft); border: 1px solid var(--border);
+      border-radius: 14px; padding: 14px 16px;
+    }
+    .card .t { font-size: 0.875rem; font-weight: 600; margin-bottom: 2px; }
+    .card .d { font-size: 0.8125rem; color: var(--sub); }
+
+    /* A — cream + cobalt (current) */
+    .p-current {
+      --bg: #fafaf9; --surface: #ffffff; --ink: #1c1917; --sub: #55534e;
+      --accent: #1d4ed8; --on-accent: #ffffff;
+      --soft: #e8edfb; --border: #e3e3e0; --border-strong: #d5d4d0;
+    }
+    /* B — ivory + terracotta */
+    .p-terra {
+      --bg: #fbf6f0; --surface: #ffffff; --ink: #241d17; --sub: #5d534a;
+      --accent: #bc4b26; --on-accent: #fff7f2;
+      --soft: #f7e7dd; --border: #eaddd2; --border-strong: #d9c8ba;
+    }
+    /* C — dark ink + amber */
+    .p-amber {
+      --bg: #14120f; --surface: #1e1b17; --ink: #f5f1ea; --sub: #a39c90;
+      --accent: #f0a532; --on-accent: #221a0c;
+      --soft: #26221c; --border: #322d26; --border-strong: #403a31;
+    }
+    .p-amber .tag { background: var(--surface); }
+    /* D — cobalt color-blocked */
+    .p-blocked {
+      --bg: #1d4ed8; --surface: rgba(255,255,255,0.10); --ink: #ffffff; --sub: #c9d6f6;
+      --accent: #ffffff; --on-accent: #1d4ed8;
+      --soft: rgba(255,255,255,0.12); --border: rgba(255,255,255,0.22); --border-strong: rgba(255,255,255,0.35);
+    }
+    .p-blocked .tag { background: rgba(255,255,255,0.08); color: #c9d6f6; border-color: rgba(255,255,255,0.18); }
+    .p-blocked .sw { border-color: rgba(255,255,255,0.35); }
+    .p-blocked .btn.ghost { background: transparent; color: #fff; border-color: rgba(255,255,255,0.4); }
+    .p-blocked .note { font-size: 0.75rem; color: #c9d6f6; margin-top: 10px; }
+  </style>
+</head>
+<body>
+  <div class="head">
+    <h1>Four palette directions, same page</h1>
+    <p>Each board is a real render of the hero in that palette. Pick one and it goes live on pitch.html.</p>
+  </div>
+  <div class="grid">
+
+    <div class="board p-current">
+      <div class="tag"><span>Current — cream + cobalt</span><span class="swatches"><span class="sw" style="background:#fafaf9"></span><span class="sw" style="background:#1d4ed8"></span><span class="sw" style="background:#1c1917"></span></span></div>
+      <div class="mini">
+        <span class="brand"><span class="mark">◈</span> TapCard</span>
+        <h2>More Google reviews, without asking</h2>
+        <p class="sub">An NFC card on your counter. One tap, Google opens.</p>
+        <div class="btns"><a class="btn" href="#">Get your card</a><a class="btn ghost" href="#">See the demo</a></div>
+        <div class="card"><div class="t">Google compliant by design</div><div class="d">Customers edit before posting. No rating suggested.</div></div>
+      </div>
+    </div>
+
+    <div class="board p-terra">
+      <div class="tag"><span>Ivory + terracotta</span><span class="swatches"><span class="sw" style="background:#fbf6f0"></span><span class="sw" style="background:#bc4b26"></span><span class="sw" style="background:#241d17"></span></span></div>
+      <div class="mini">
+        <span class="brand"><span class="mark">◈</span> TapCard</span>
+        <h2>More Google reviews, without asking</h2>
+        <p class="sub">An NFC card on your counter. One tap, Google opens.</p>
+        <div class="btns"><a class="btn" href="#">Get your card</a><a class="btn ghost" href="#">See the demo</a></div>
+        <div class="card"><div class="t">Google compliant by design</div><div class="d">Customers edit before posting. No rating suggested.</div></div>
+      </div>
+    </div>
+
+    <div class="board p-amber">
+      <div class="tag"><span>Dark ink + amber</span><span class="swatches"><span class="sw" style="background:#14120f"></span><span class="sw" style="background:#f0a532"></span><span class="sw" style="background:#f5f1ea"></span></span></div>
+      <div class="mini">
+        <span class="brand"><span class="mark">◈</span> TapCard</span>
+        <h2>More Google reviews, without asking</h2>
+        <p class="sub">An NFC card on your counter. One tap, Google opens.</p>
+        <div class="btns"><a class="btn" href="#">Get your card</a><a class="btn ghost" href="#">See the demo</a></div>
+        <div class="card"><div class="t">Google compliant by design</div><div class="d">Customers edit before posting. No rating suggested.</div></div>
+      </div>
+    </div>
+
+    <div class="board p-blocked">
+      <div class="tag"><span>Cobalt, color-blocked</span><span class="swatches"><span class="sw" style="background:#1d4ed8"></span><span class="sw" style="background:#ffffff"></span><span class="sw" style="background:#c9d6f6"></span></span></div>
+      <div class="mini">
+        <span class="brand"><span class="mark">◈</span> TapCard</span>
+        <h2>More Google reviews, without asking</h2>
+        <p class="sub">An NFC card on your counter. One tap, Google opens.</p>
+        <div class="btns"><a class="btn" href="#">Get your card</a><a class="btn ghost" href="#">See the demo</a></div>
+        <div class="card"><div class="t">Google compliant by design</div><div class="d">Customers edit before posting. No rating suggested.</div></div>
+        <p class="note">Hero and CTA sections are full cobalt blocks; content sections stay cream. The page carries real color mass instead of accent sprinkles.</p>
+      </div>
+    </div>
+
+  </div>
+</body>
+</html>

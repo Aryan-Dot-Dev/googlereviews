@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-  <meta name="theme-color" content="#fafaf9">
+  <meta name="theme-color" content="#fbf6f0">
   <title>TapCard — More Google reviews, without asking</title>
   <meta name="description" content="TapCard puts an NFC review card on your counter. Your customer taps it, Google opens, and a suggested review is ready to paste. Flat price, no monthly fee, setup handled for you.">
   <link rel="canonical" href="https://googlereviews.in/">
@@ -49,48 +49,49 @@
          Primitives are ramps with constant hue; components only
          ever reference the semantic tokens below.
 
-         Neutral ramp (warm stone, hue ~50, chroma ~0.006):
-           25  #fcfcfd   (reserved: softest surface)
-           50  #fafaf9   bg-page
-           100 #f4f4f3   bg-inset
-           200 #ececea   border-soft
-           300 #e3e3e0   border
-           400 #d5d4d0   border-strong
-           600 #55534e   text-secondary
-           500 #75736e   text-tertiary
-           900 #1c1917   text-primary
+         Neutral ramp (warm ivory, hue ~40, chroma ~0.012):
+           25  #fffdf9   bg-surface (cards)
+           50  #fbf6f0   bg-page
+           100 #f6efe6   bg-inset
+           200 #f0e7da   border-soft
+           300 #e7dccd   border
+           400 #d9c9b6   border-strong
+           600 #5d534a   text-secondary
+           500 #6f6456   text-tertiary
+           900 #241d17   text-primary
 
-         Accent ramp (cobalt, hue ~262):
-           700 #1d4ed8   accent-solid / accent-text
-           750 #1a44bc   accent-solid-hover
-           100 #e8edfb   accent-soft
-           200 #c8d4f4   accent-border
+         Accent ramp (terracotta, hue ~20):
+           650 #a8431f   accent-text (on ivory)
+           600 #bc4b26   accent-solid
+           620 #a53f1e   accent-solid-hover
+           100 #f7e7dd   accent-soft
+           200 #ecd3c2   accent-border
 
-         Danger ramp (red, error text only):
-           700 #b42318   danger-text
+         Danger ramp (brick, error text only):
+           800 #9a2b1a   danger-text
          ========================================================= */
-      --color-bg-page: #fafaf9;
-      --color-bg-surface: #ffffff;
-      --color-bg-inset: #f4f4f3;
-      --color-border-soft: #ececea;
-      --color-border: #e3e3e0;
-      --color-border-strong: #d5d4d0;
-      --color-text-primary: #1c1917;
-      --color-text-secondary: #55534e;
-      --color-text-tertiary: #75736e;
+      --color-bg-page: #fbf6f0;
+      --color-bg-surface: #fffdf9;
+      --color-bg-inset: #f6efe6;
+      --color-border-soft: #f0e7da;
+      --color-border: #e7dccd;
+      --color-border-strong: #d9c9b6;
+      --color-text-primary: #241d17;
+      --color-text-secondary: #5d534a;
+      --color-text-tertiary: #6f6456;
 
-      --color-accent-solid: #1d4ed8;
-      --color-accent-solid-hover: #1a44bc;
-      --color-accent-text: #1d4ed8;
-      --color-accent-soft: #e8edfb;
-      --color-accent-border: #c8d4f4;
+      --color-accent-solid: #bc4b26;
+      --color-accent-solid-hover: #a53f1e;
+      --color-accent-text: #a8431f;
+      --color-accent-soft: #f7e7dd;
+      --color-accent-border: #ecd3c2;
 
-      --color-danger-text: #b42318;
+      --color-danger-text: #9a2b1a;
 
       /* Shadows tinted to the neutral hue, never pure black */
-      --shadow-card: 0 1px 2px rgba(24, 24, 27, 0.04), 0 8px 24px rgba(24, 24, 27, 0.05);
-      --shadow-float: 0 24px 64px rgba(24, 24, 27, 0.14);
-      --shadow-island: 0 8px 32px rgba(24, 24, 27, 0.08);
+      --shadow-card: 0 1px 2px rgba(36, 29, 23, 0.04), 0 8px 24px rgba(36, 29, 23, 0.06);
+      --shadow-float: 0 24px 64px rgba(36, 29, 23, 0.16);
+      --shadow-island: 0 8px 32px rgba(36, 29, 23, 0.10);
 
       --text-xs: 0.75rem;   --lh-xs: 1rem;
       --text-sm: 0.875rem;  --lh-sm: 1.25rem;
@@ -132,7 +133,7 @@
       inset: 0;
       z-index: 0;
       pointer-events: none;
-      background: radial-gradient(720px 520px at 80% 8%, rgba(29, 78, 216, 0.04), transparent 70%);
+      background: radial-gradient(720px 520px at 80% 8%, rgba(188, 75, 38, 0.05), transparent 70%);
     }
     body::after {
       content: "";
@@ -146,7 +147,7 @@
 
     main { position: relative; z-index: 2; }
 
-    ::selection { background: rgba(29, 78, 216, 0.12); }
+    ::selection { background: rgba(188, 75, 38, 0.18); }
 
     h1, h2, h3 { text-wrap: balance; font-weight: 600; letter-spacing: -0.02em; color: var(--color-text-primary); }
     p { text-wrap: pretty; }
@@ -184,10 +185,10 @@
       height: var(--nav-h);
       padding: 0 var(--s-100) 0 var(--s-300);
       border-radius: var(--r-full);
-      background: rgba(255, 255, 255, 0.72);
+      background: rgba(251, 246, 240, 0.78);
       -webkit-backdrop-filter: blur(20px) saturate(180%);
       backdrop-filter: blur(20px) saturate(180%);
-      border: 1px solid rgba(24, 24, 27, 0.08);
+      border: 1px solid rgba(36, 29, 23, 0.10);
       box-shadow: var(--shadow-island);
       max-width: calc(100vw - var(--s-400));
     }
@@ -239,7 +240,7 @@
 
     .menu {
       position: fixed; inset: 0; z-index: 90;
-      background: rgba(250, 250, 250, 0.88);
+      background: rgba(251, 246, 240, 0.88);
       -webkit-backdrop-filter: blur(64px);
       backdrop-filter: blur(64px);
       display: flex; flex-direction: column; align-items: center; justify-content: center;
@@ -268,7 +269,7 @@
       padding: var(--s-75) var(--s-200); min-height: 48px; white-space: nowrap;
       text-decoration: none;
       transition: background-color 150ms var(--ease-out), transform 160ms var(--ease-out), box-shadow 150ms var(--ease-out);
-      box-shadow: 0 1px 2px rgba(24, 24, 27, 0.08);
+      box-shadow: 0 1px 2px rgba(36, 29, 23, 0.10);
     }
     .btn:hover { background: var(--color-accent-solid-hover); }
     .btn:active { transform: scale(0.96); }
@@ -348,8 +349,8 @@
       width: 210px;
       transform: rotate(-8deg);
       border-radius: var(--r-xl);
-      background: linear-gradient(145deg, #2a2b2e, #17181a);
-      border: 1px solid #3a3b3f;
+      background: linear-gradient(145deg, #2e2620, #1a1512);
+      border: 1px solid #443a30;
       box-shadow: var(--shadow-float);
       padding: var(--s-200);
       display: flex;
@@ -357,7 +358,7 @@
       gap: var(--s-300);
     }
     .hero-card .row { display: flex; justify-content: space-between; align-items: center; }
-    .hero-card .row i { font-size: var(--text-2xl); color: #93b4f8; }
+    .hero-card .row i { font-size: var(--text-2xl); color: #f2b98d; }
     .hero-card .chip {
       width: 30px; height: 22px; border-radius: 6px;
       border: 1.5px solid #71717a;
@@ -386,7 +387,7 @@
       position: absolute;
       inset: 0;
       border-radius: 50%;
-      border: 2px solid rgba(29, 78, 216, 0.45);
+      border: 2px solid rgba(188, 75, 38, 0.45);
       animation: ripple 2.2s var(--ease-out) infinite;
     }
     @keyframes ripple {
@@ -465,7 +466,7 @@
       position: relative;
       z-index: 1;
       padding: var(--s-300);
-      background: linear-gradient(transparent, rgba(28, 25, 23, 0.82));
+      background: linear-gradient(transparent, rgba(36, 29, 23, 0.82));
     }
     .bento-img-cell .cap h3 { color: #ffffff; }
     .bento-img-cell .cap p { color: #d4d4d8; }
@@ -599,7 +600,7 @@
       inset: auto 0 0 0;
       z-index: 1;
       padding: var(--s-300);
-      background: linear-gradient(transparent, rgba(28, 25, 23, 0.88));
+      background: linear-gradient(transparent, rgba(36, 29, 23, 0.88));
     }
     .slice h3 { color: #ffffff; font-size: var(--text-lg); }
     .slice p {
@@ -692,8 +693,8 @@
     textarea { min-height: 84px; resize: vertical; }
     input:focus, textarea:focus, select:focus {
       outline: none;
-      border-color: rgba(29, 78, 216, 0.55);
-      box-shadow: 0 0 0 3px rgba(29, 78, 216, 0.10);
+      border-color: rgba(188, 75, 38, 0.55);
+      box-shadow: 0 0 0 3px rgba(188, 75, 38, 0.14);
     }
     input::placeholder, textarea::placeholder { color: var(--color-text-tertiary); }
     .meeting {
@@ -714,7 +715,7 @@
     .switch::after {
       content: ""; position: absolute; top: 3px; left: 3px;
       width: 20px; height: 20px; border-radius: 50%;
-      background: #ffffff; box-shadow: 0 1px 2px rgba(24, 24, 27, 0.25);
+      background: #ffffff; box-shadow: 0 1px 2px rgba(36, 29, 23, 0.3);
       transition: transform 180ms var(--ease-fluid);
     }
     .meeting-row input:checked + .switch { background: var(--color-accent-solid); }
