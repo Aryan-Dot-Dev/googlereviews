@@ -4,129 +4,314 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
   <meta name="theme-color" content="#fafafa">
-  <title>Get Google Reviews for your business</title>
+  <title>TapCard — More Google reviews, without asking</title>
+  <meta name="description" content="We set your business up with an NFC card. A customer taps it, your Google review page opens on their phone, and a suggested review is ready to paste. Store visit nearby, delivery anywhere in India.">
+  <link rel="canonical" href="https://googlereviews.in/">
+  <meta property="og:type" content="website">
+  <meta property="og:title" content="TapCard — More Google reviews, without asking">
+  <meta property="og:description" content="An NFC card your customers tap. Your Google review page opens instantly, with a suggested review ready to paste.">
+  <meta property="og:url" content="https://googlereviews.in/">
+  <meta property="og:image" content="https://googlereviews.in/og.png">
+  <meta name="twitter:card" content="summary_large_image">
+
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    "mainEntity": [
+      {"@type": "Question", "name": "Is this allowed by Google?", "acceptedAnswer": {"@type": "Answer", "text": "Yes. The card opens Google's own review form on the customer's phone. Customers read, edit or rewrite the review before posting it. Nothing is posted automatically and no rating is suggested."}},
+      {"@type": "Question", "name": "What does the customer see when they tap?", "acceptedAnswer": {"@type": "Answer", "text": "A clean page with your business name, a suggested review they can edit, and one button that copies it and opens your Google review form. Nothing is installed and no app is needed."}},
+      {"@type": "Question", "name": "Do customers need to install an app?", "acceptedAnswer": {"@type": "Answer", "text": "No. NFC tap to open works in the phone's browser on modern iPhones and Android phones. Every card also ships with a QR code printed on the back for phones without NFC."}},
+      {"@type": "Question", "name": "Can a customer edit the review before posting?", "acceptedAnswer": {"@type": "Answer", "text": "Always. The suggested review is a starting point. The page tells the customer they can edit it before posting, and they can rewrite it completely if they want."}},
+      {"@type": "Question", "name": "What if a phone does not support NFC?", "acceptedAnswer": {"@type": "Answer", "text": "Every card ships with a QR code printed on the back that opens the same review page, so no customer is turned away."}},
+      {"@type": "Question", "name": "How much does it cost?", "acceptedAnswer": {"@type": "Answer", "text": "Simple flat pricing per location, with no monthly fee. Tell us about your business through the form and we will send you the exact price for your setup."}},
+      {"@type": "Question", "name": "How long does setup take?", "acceptedAnswer": {"@type": "Answer", "text": "We usually deliver within a week. Nearby businesses get a store visit where we handle everything in person; everyone else gets their card by delivery."}},
+      {"@type": "Question", "name": "What do you need from me?", "acceptedAnswer": {"@type": "Answer", "text": "Just your Google Business Profile listing. We find your review link, write the suggested review, print the card and set it up. You place it at the counter."}},
+      {"@type": "Question", "name": "Where is the data stored?", "acceptedAnswer": {"@type": "Answer", "text": "Your enquiry is stored in our database so we can contact you. We use it only for this and never share it. See the privacy policy linked in the footer."}}
+    ]
+  }
+  </script>
+
   <style>
     :root {
       --bg: #fafafa;
       --surface: #ffffff;
+      --surface-2: #f4f4f5;
       --text: #17181a;
-      --text-secondary: #6b6f76;
+      --text-secondary: #52565c;
       --text-muted: #9a9ea6;
       --border: #ebedef;
-      --accent: #17181a;          /* primary CTA color */
+      --accent: #17181a;
       --accent-hover: #26282c;
       --success: #1b7f4f;
+      --success-bg: #eaf5ef;
       --danger: #b3261e;
       --radius: 16px;
       --radius-sm: 12px;
+      --ease-out: cubic-bezier(0.23, 1, 0.32, 1);
+      --ease-fluid: cubic-bezier(0.32, 0.72, 0, 1);
     }
 
     * { box-sizing: border-box; margin: 0; padding: 0; }
 
-    html { -webkit-text-size-adjust: 100%; }
+    html { -webkit-text-size-adjust: 100%; scroll-behavior: smooth; }
 
     body {
       background: var(--bg);
       color: var(--text);
       font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
         "Helvetica Neue", Arial, sans-serif;
+      font-size: 16px;
+      line-height: 1.5;
       -webkit-font-smoothing: antialiased;
     }
 
-    .page {
-      min-height: 100svh;
-      max-width: 480px;
+    h1, h2, h3 { text-wrap: balance; }
+    p { text-wrap: pretty; }
+
+    .wrap {
+      max-width: 680px;
       margin: 0 auto;
-      padding: 40px 20px calc(40px + env(safe-area-inset-bottom));
-      display: flex;
-      flex-direction: column;
-      gap: 20px;
+      padding: 0 20px;
     }
+    @media (max-width: 360px) { .wrap { padding: 0 16px; } }
 
-    @media (max-width: 360px) {
-      .page { padding-left: 16px; padding-right: 16px; }
+    section { padding: 64px 0; }
+
+    [hidden] { display: none !important; }
+
+    button { font: inherit; color: inherit; }
+
+    /* ---------- Skip link ---------- */
+    .skip {
+      position: absolute;
+      left: -9999px;
+      top: 0;
+      background: var(--surface);
+      color: var(--text);
+      padding: 8px 16px;
+      border-radius: 0 0 12px 0;
+      z-index: 100;
     }
+    .skip:focus { left: 0; }
 
-    /* ---------- Pitch header ---------- */
-
-    .hero {
-      display: flex;
-      flex-direction: column;
+    /* ---------- Floating CTA pill (sticky wayfinding) ---------- */
+    .cta-pill {
+      position: fixed;
+      top: calc(12px + env(safe-area-inset-top));
+      left: 50%;
+      transform: translateX(-50%);
+      z-index: 50;
+      display: inline-flex;
       align-items: center;
+      gap: 8px;
+      font-size: 14px;
+      font-weight: 600;
+      color: #fff;
+      text-decoration: none;
+      background: rgba(23, 24, 26, 0.72);
+      -webkit-backdrop-filter: blur(20px) saturate(180%);
+      backdrop-filter: blur(20px) saturate(180%);
+      border: 1px solid rgba(255, 255, 255, 0.14);
+      border-radius: 999px;
+      padding: 10px 18px;
+      box-shadow: 0 4px 16px rgba(16, 17, 20, 0.18);
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 300ms var(--ease-fluid);
+    }
+    .cta-pill.show { opacity: 1; pointer-events: auto; }
+    .cta-pill:active { transform: translateX(-50%) scale(0.96); }
+
+    /* ---------- Hero ---------- */
+    .hero {
+      padding: 96px 0 72px;
       text-align: center;
-      gap: 14px;
-      padding-top: 12px;
     }
 
-    .logo {
-      width: 56px;
-      height: 56px;
-      border-radius: 14px;
-      background: var(--accent);
-      color: #fff;
-      font-size: 19px;
+    .hero h1 {
+      font-size: clamp(36px, 9vw, 48px);
+      line-height: 1.1;
       font-weight: 700;
-      letter-spacing: 0.04em;
-      display: flex;
+      letter-spacing: -0.025em;
+      background: linear-gradient(90deg, #000 40%, #666);
+      -webkit-background-clip: text;
+      background-clip: text;
+      -webkit-text-fill-color: transparent;
+      color: #000;
+      margin-bottom: 20px;
+    }
+
+    .hero .sub {
+      font-size: 18px;
+      line-height: 1.55;
+      color: var(--text-secondary);
+      margin: 0 auto 28px;
+      max-width: 560px;
+    }
+
+    .btn {
+      display: inline-flex;
       align-items: center;
       justify-content: center;
-      overflow: hidden;
-      flex-shrink: 0;
+      gap: 8px;
+      font-size: 16px;
+      font-weight: 600;
+      color: #fff;
+      background: var(--accent);
+      border: 0;
+      border-radius: 14px;
+      padding: 8px 16px;
+      min-height: 48px;
+      min-width: 48px;
+      cursor: pointer;
+      text-decoration: none;
+      box-shadow: 0 1px 2px rgba(16, 17, 20, 0.12);
+      transition: background-color 150ms var(--ease-out), transform 160ms var(--ease-out);
+    }
+    .btn:hover:not(:disabled) { background: var(--accent-hover); }
+    .btn:active:not(:disabled) { transform: scale(0.96); }
+    .btn:focus-visible { outline: 2px solid rgba(23, 24, 26, 0.5); outline-offset: 3px; }
+    .btn:disabled { cursor: default; opacity: 0.6; }
+    .btn svg { width: 18px; height: 18px; flex-shrink: 0; }
+
+    .proof {
+      margin-top: 20px;
+      font-size: 14px;
+      color: var(--text-muted);
     }
 
-    .logo svg { width: 30px; height: 30px; }
-    .logo img { width: 100%; height: 100%; object-fit: cover; }
-
-    h1 {
-      font-size: 26px;
-      line-height: 1.22;
-      font-weight: 700;
-      letter-spacing: -0.02em;
+    /* ---------- Hero product mock ---------- */
+    .mock {
+      width: 300px;
+      margin: 48px auto 0;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 32px 32px 40px 40px;
+      box-shadow:
+        0 1px 2px rgba(16, 17, 20, 0.05),
+        0 24px 48px -16px rgba(16, 17, 20, 0.18);
+      padding: 12px;
     }
 
-    .hero .pitch {
-      font-size: 15px;
-      line-height: 1.6;
-      color: var(--text-secondary);
-      max-width: 40ch;
-    }
-
-    .hero .pitch strong { color: var(--text); font-weight: 600; }
-
-    /* ---------- Value points ---------- */
-
-    .points {
+    .mock-screen {
+      border-radius: 22px;
+      background: var(--bg);
+      border: 1px solid var(--border);
+      padding: 20px 16px 24px;
       display: flex;
       flex-direction: column;
+      align-items: center;
       gap: 10px;
     }
 
-    .point {
+    .mock-logo {
+      width: 44px;
+      height: 44px;
+      border-radius: 12px;
+      background: var(--accent);
+      color: #fff;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 15px;
+      font-weight: 700;
+    }
+
+    .mock-name { font-size: 14px; font-weight: 650; }
+    .mock-tag { font-size: 12px; color: var(--text-muted); margin-top: -6px; }
+
+    .mock-card {
+      width: 100%;
       background: var(--surface);
       border: 1px solid var(--border);
       border-radius: var(--radius-sm);
-      box-shadow: 0 1px 2px rgba(16, 17, 20, 0.04);
-      padding: 14px 16px;
-      display: flex;
-      align-items: center;
-      gap: 12px;
-      font-size: 14px;
-      line-height: 1.45;
+      padding: 12px;
+      margin-top: 8px;
+    }
+    .mock-card-label {
+      font-size: 9px;
+      font-weight: 600;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--text-muted);
+      margin-bottom: 6px;
+    }
+    .mock-card-text { font-size: 11px; line-height: 1.55; color: var(--text-secondary); }
+
+    .mock-cta {
+      width: 100%;
+      background: var(--accent);
+      color: #fff;
+      font-size: 12px;
+      font-weight: 600;
+      border-radius: 10px;
+      padding: 11px 0;
+      margin-top: 4px;
+      text-align: center;
+    }
+
+    .mock-note { font-size: 10px; color: var(--text-muted); }
+
+    @keyframes tapPulse {
+      0%   { transform: translate(-50%, -50%) scale(1);   opacity: 0.5; }
+      70%  { transform: translate(-50%, -50%) scale(1.5); opacity: 0; }
+      100% { transform: translate(-50%, -50%) scale(1.5); opacity: 0; }
+    }
+    .tap-dot {
+      position: relative;
+      width: 56px;
+      height: 56px;
+      margin-top: 6px;
+    }
+    .tap-dot::before {
+      content: "";
+      position: absolute;
+      left: 50%;
+      top: 50%;
+      width: 44px;
+      height: 44px;
+      border-radius: 50%;
+      border: 2px solid var(--text-muted);
+      animation: tapPulse 2.2s var(--ease-out) infinite;
+    }
+    .tap-dot svg {
+      position: absolute;
+      left: 50%;
+      top: 50%;
+      transform: translate(-50%, -50%);
+      width: 22px;
+      height: 22px;
       color: var(--text-secondary);
     }
 
-    .point strong { color: var(--text); font-weight: 600; }
-
-    .point svg {
-      width: 20px;
-      height: 20px;
-      flex-shrink: 0;
-      color: var(--text);
+    /* ---------- Sections ---------- */
+    .eyebrow {
+      font-size: 12px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: var(--text-muted);
+      margin-bottom: 12px;
     }
 
-    /* ---------- Form card ---------- */
+    h2 {
+      font-size: clamp(26px, 6vw, 30px);
+      line-height: 1.2;
+      font-weight: 700;
+      letter-spacing: -0.02em;
+      margin-bottom: 28px;
+    }
 
-    .form-card {
+    /* ---------- Benefits grid ---------- */
+    .benefits {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 12px;
+    }
+    @media (max-width: 480px) { .benefits { grid-template-columns: 1fr; } }
+
+    .benefit {
       background: var(--surface);
       border: 1px solid var(--border);
       border-radius: var(--radius);
@@ -134,47 +319,146 @@
       padding: 20px 18px;
     }
 
-    .form-head {
+    .benefit svg {
+      width: 22px;
+      height: 22px;
+      color: var(--text);
+      margin-bottom: 14px;
+      display: block;
+    }
+
+    .benefit h3 { font-size: 16px; font-weight: 650; margin-bottom: 6px; }
+    .benefit p { font-size: 14px; line-height: 1.55; color: var(--text-secondary); }
+
+    /* ---------- Tagline reveal ---------- */
+    .tagline {
+      padding: 88px 0;
+      text-align: center;
+    }
+    .tagline p {
+      font-size: clamp(30px, 7vw, 48px);
+      line-height: 1.18;
+      font-weight: 700;
+      letter-spacing: -0.025em;
+      max-width: 620px;
+      margin: 0 auto;
+    }
+    .tagline .w {
+      color: rgba(23, 24, 26, 0.3);
+      transition: color 600ms var(--ease-fluid);
+    }
+    .tagline .w.on { color: var(--text); }
+
+    /* ---------- Steps ---------- */
+    .steps {
       display: flex;
       flex-direction: column;
-      gap: 4px;
-      margin-bottom: 16px;
+      gap: 12px;
+      counter-reset: step;
     }
 
-    .card-label {
-      font-size: 11px;
-      font-weight: 600;
-      text-transform: uppercase;
-      letter-spacing: 0.08em;
-      color: var(--text-muted);
+    .step {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      box-shadow: 0 1px 2px rgba(16, 17, 20, 0.04);
+      padding: 20px 18px;
+      display: flex;
+      gap: 16px;
+      align-items: flex-start;
     }
 
-    .form-title {
-      font-size: 17px;
+    .step-num {
+      counter-increment: step;
+      width: 28px;
+      height: 28px;
+      border-radius: 9px;
+      background: var(--surface-2);
+      border: 1px solid var(--border);
+      font-size: 13px;
       font-weight: 650;
-      letter-spacing: -0.01em;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
     }
+    .step-num::before { content: counter(step); }
 
-    .form-sub {
-      font-size: 13.5px;
-      line-height: 1.5;
+    .step h3 { font-size: 16px; font-weight: 650; margin-bottom: 6px; }
+    .step p { font-size: 14px; line-height: 1.55; color: var(--text-secondary); }
+
+    .step-link {
+      color: var(--text);
+      font-weight: 550;
+      text-decoration: underline;
+      text-decoration-color: rgba(23, 24, 26, 0.3);
+      text-underline-offset: 3px;
+    }
+    .step-link:hover { text-decoration-color: rgba(23, 24, 26, 0.7); }
+
+    /* ---------- FAQ ---------- */
+    .faq { display: flex; flex-direction: column; }
+
+    .faq details {
+      border-bottom: 1px solid var(--border);
+    }
+    .faq details:last-child { border-bottom: 0; }
+
+    .faq summary {
+      list-style: none;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+      padding: 18px 0;
+      font-size: 16px;
+      font-weight: 600;
+      transition: color 150ms var(--ease-out);
+    }
+    .faq summary::-webkit-details-marker { display: none; }
+    .faq summary:focus-visible { outline: 2px solid rgba(23, 24, 26, 0.5); outline-offset: 2px; border-radius: 4px; }
+    .faq summary:hover { color: #000; }
+
+    .faq .chev {
+      width: 18px;
+      height: 18px;
+      flex-shrink: 0;
+      color: var(--text-muted);
+      transition: transform 200ms var(--ease-fluid);
+    }
+    .faq details[open] .chev { transform: rotate(180deg); }
+
+    .faq .answer {
+      font-size: 14.5px;
+      line-height: 1.6;
       color: var(--text-secondary);
+      padding: 0 32px 18px 0;
     }
 
-    .field { margin-bottom: 14px; }
+    /* ---------- Lead form section ---------- */
+    .lead {
+      background: var(--surface);
+      border-top: 1px solid var(--border);
+      border-bottom: 1px solid var(--border);
+    }
+
+    .form-card {
+      background: var(--bg);
+      border: 1px solid var(--border);
+      border-radius: 20px;
+      padding: 28px 22px;
+    }
+
+    .field { margin-bottom: 16px; }
 
     label {
       display: block;
-      font-size: 13px;
+      font-size: 14px;
       font-weight: 600;
-      color: var(--text);
       margin-bottom: 6px;
     }
-
-    label .opt {
-      font-weight: 500;
-      color: var(--text-muted);
-    }
+    label .opt { font-weight: 500; color: var(--text-muted); }
 
     input[type="text"], input[type="tel"], textarea, select {
       width: 100%;
@@ -182,13 +466,12 @@
       font-size: 16px;
       line-height: 1.5;
       color: #26282c;
-      background: #fcfcfd;
+      background: var(--surface);
       border: 1px solid var(--border);
       border-radius: var(--radius-sm);
       padding: 12px 14px;
-      transition: border-color 150ms ease, box-shadow 150ms ease;
+      transition: border-color 150ms var(--ease-out), box-shadow 150ms var(--ease-out);
     }
-
     textarea { min-height: 84px; resize: vertical; }
 
     input:focus, textarea:focus, select:focus {
@@ -196,19 +479,16 @@
       outline-offset: -1px;
       border-color: #b9bdc4;
     }
-
     input::placeholder, textarea::placeholder { color: var(--text-muted); }
 
-    /* ---------- Meeting toggle ---------- */
-
+    /* Meeting toggle */
     .meeting {
       border: 1px solid var(--border);
       border-radius: var(--radius-sm);
-      background: #fcfcfd;
+      background: var(--surface);
       padding: 14px;
-      margin: 2px 0 14px;
+      margin: 2px 0 16px;
     }
-
     .meeting-row {
       display: flex;
       align-items: center;
@@ -217,7 +497,6 @@
       -webkit-user-select: none;
       user-select: none;
     }
-
     .meeting-row input { position: absolute; opacity: 0; pointer-events: none; }
 
     .switch {
@@ -227,9 +506,8 @@
       background: #d9dbde;
       position: relative;
       flex-shrink: 0;
-      transition: background-color 180ms ease;
+      transition: background-color 180ms var(--ease-fluid);
     }
-
     .switch::after {
       content: "";
       position: absolute;
@@ -240,65 +518,22 @@
       border-radius: 50%;
       background: #fff;
       box-shadow: 0 1px 2px rgba(16, 17, 20, 0.2);
-      transition: transform 180ms ease;
+      transition: transform 180ms var(--ease-fluid);
     }
-
     .meeting-row input:checked + .switch { background: var(--accent); }
     .meeting-row input:checked + .switch::after { transform: translateX(18px); }
     .meeting-row input:focus-visible + .switch {
       outline: 2px solid rgba(23, 24, 26, 0.35);
       outline-offset: 2px;
     }
-
     .meeting-copy { display: flex; flex-direction: column; gap: 1px; }
     .meeting-copy .t { font-size: 14px; font-weight: 600; }
     .meeting-copy .d { font-size: 12.5px; color: var(--text-secondary); }
 
-    #meetingOptions { margin-top: 12px; }
-
-    /* ---------- Submit ---------- */
-
-    .cta {
-      width: 100%;
-      min-height: 56px;
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      gap: 10px;
-      font: inherit;
-      font-size: 16px;
-      font-weight: 600;
-      color: #fff;
-      background: var(--accent);
-      border: 0;
-      border-radius: 14px;
-      padding: 0 20px;
-      cursor: pointer;
-      box-shadow: 0 1px 2px rgba(16, 17, 20, 0.12);
-      transition: background-color 150ms ease, transform 150ms ease, opacity 150ms ease;
-    }
-
-    .cta:hover:not(:disabled) { background: var(--accent-hover); }
-    .cta:active:not(:disabled) { transform: scale(0.985); }
-    .cta:focus-visible { outline: 2px solid rgba(23, 24, 26, 0.5); outline-offset: 3px; }
-    .cta:disabled { cursor: default; opacity: 0.6; }
-
-    .cta svg { width: 18px; height: 18px; flex-shrink: 0; }
-
-    .spinner {
-      width: 18px;
-      height: 18px;
-      border: 2px solid rgba(255, 255, 255, 0.35);
-      border-top-color: #fff;
-      border-radius: 50%;
-      animation: spin 0.7s linear infinite;
-    }
-
-    @keyframes spin { to { transform: rotate(360deg); } }
+    #meetingSlotField { margin: 12px 0 0; }
 
     .field-error {
-      font-size: 12.5px;
-      line-height: 1.5;
+      font-size: 13px;
       color: var(--danger);
       margin-top: 10px;
       text-align: center;
@@ -308,189 +543,406 @@
       font-size: 12.5px;
       color: var(--text-muted);
       text-align: center;
-      margin-top: 4px;
+      margin-top: 12px;
     }
 
-    /* ---------- Success state ---------- */
+    .spinner {
+      width: 18px;
+      height: 18px;
+      border: 2px solid rgba(255, 255, 255, 0.35);
+      border-top-color: #fff;
+      border-radius: 50%;
+      animation: spin 0.7s linear infinite;
+    }
+    @keyframes spin { to { transform: rotate(360deg); } }
 
-    .success {
+    /* Form <-> success crossfade */
+    .fade-swap {
+      display: grid;
+    }
+    .fade-swap > * {
+      grid-area: 1 / 1;
+      transition: opacity 250ms var(--ease-out), transform 250ms var(--ease-out);
+    }
+    .fade-swap .out {
+      opacity: 0;
+      transform: translateY(6px);
+      pointer-events: none;
+    }
+
+    /* Success card */
+    .success-card {
       background: var(--surface);
       border: 1px solid var(--border);
-      border-radius: var(--radius);
-      box-shadow: 0 1px 2px rgba(16, 17, 20, 0.04);
-      padding: 32px 24px;
+      border-radius: 20px;
+      padding: 40px 24px;
       display: flex;
       flex-direction: column;
       align-items: center;
       text-align: center;
       gap: 10px;
     }
-
-    .success .badge {
+    .success-card .badge {
       width: 52px;
       height: 52px;
       border-radius: 50%;
-      background: #eaf5ef;
+      background: var(--success-bg);
       color: var(--success);
       display: flex;
       align-items: center;
       justify-content: center;
       margin-bottom: 4px;
     }
+    .success-card .badge svg { width: 26px; height: 26px; }
+    .success-card h3 { font-size: 20px; font-weight: 700; letter-spacing: -0.01em; }
+    .success-card p { font-size: 14px; line-height: 1.6; color: var(--text-secondary); max-width: 34ch; }
 
-    .success .badge svg { width: 26px; height: 26px; }
+    /* ---------- Footer ---------- */
+    footer {
+      padding: 40px 0 calc(40px + env(safe-area-inset-bottom));
+    }
+    .foot {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 12px;
+      text-align: center;
+    }
+    .foot-brand { font-size: 14px; font-weight: 650; }
+    .foot-links { display: flex; gap: 20px; }
+    .foot-links a {
+      font-size: 13px;
+      color: var(--text-muted);
+      text-decoration: none;
+    }
+    .foot-links a:hover { color: var(--text); text-decoration: underline; }
+    .foot-copy { font-size: 12.5px; color: var(--text-muted); }
 
-    .success h2 { font-size: 19px; font-weight: 700; letter-spacing: -0.01em; }
-    .success p { font-size: 14px; line-height: 1.6; color: var(--text-secondary); max-width: 34ch; }
+    /* ---------- Scroll reveals ---------- */
+    .reveal {
+      opacity: 0;
+      transform: translateY(24px);
+      filter: blur(4px);
+      transition:
+        opacity 700ms var(--ease-fluid),
+        transform 700ms var(--ease-fluid),
+        filter 700ms var(--ease-fluid);
+      will-change: opacity, transform;
+    }
+    .reveal.in {
+      opacity: 1;
+      transform: none;
+      filter: none;
+    }
 
-    [hidden] { display: none !important; }
+    /* Stagger children inside grids */
+    .reveal-group .reveal:nth-child(2) { transition-delay: 80ms; }
+    .reveal-group .reveal:nth-child(3) { transition-delay: 160ms; }
+    .reveal-group .reveal:nth-child(4) { transition-delay: 240ms; }
 
+    /* ---------- Reduced motion ---------- */
     @media (prefers-reduced-motion: reduce) {
-      * { transition: none !important; animation-duration: 0.01ms !important; }
+      html { scroll-behavior: auto; }
+      .reveal, .reveal.in {
+        transition: opacity 200ms ease;
+        transform: none;
+        filter: none;
+      }
+      .reveal-group .reveal { transition-delay: 0ms; }
+      .tagline .w { transition-duration: 150ms; }
+      .tap-dot::before { animation: none; opacity: 0; }
+      .fade-swap > * { transition-duration: 150ms; transform: none; }
+      .cta-pill { transition-duration: 150ms; }
+    }
+    @media (prefers-reduced-transparency: reduce) {
+      .cta-pill { background: #17181a; -webkit-backdrop-filter: none; backdrop-filter: none; }
     }
   </style>
-  <script type="importmap">
-    {
-      "imports": {
-        "@neondatabase/serverless": "https://esm.sh/@neondatabase/serverless@1.1.0"
-      }
-    }
-  </script>
 </head>
 <body>
-  <main class="page">
+  <a class="skip" href="#lead">Skip to enquiry form</a>
 
-    <!-- 1. Pitch header -->
+  <a class="cta-pill" id="ctaPill" href="#lead">Get your review card</a>
+
+  <main id="main">
+
+    <!-- ================= Hero ================= -->
     <header class="hero">
-      <div class="logo" aria-hidden="true">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
-             stroke-linecap="round" stroke-linejoin="round">
-          <path d="M12 2v14"/><path d="m19 9-7 7-7-7"/><path d="M5 22h14"/>
-        </svg>
-      </div>
-      <h1>Get more Google reviews for your business</h1>
-      <p class="pitch">
-        We set up a <strong>direct solution that gets Google reviews</strong> —
-        an NFC card your customers tap, and your review page opens instantly.
-        <strong>If you are near, we will visit your store, or we will ship it to you.</strong>
-      </p>
-    </header>
+      <div class="wrap">
+        <h1>More Google reviews,<br>without asking</h1>
+        <p class="sub">
+          We set your business up with an NFC card. A customer taps it, your Google
+          review page opens on their phone, and a suggested review is ready to paste.
+        </p>
+        <a class="btn" href="#lead">Get your review card</a>
+        <p class="proof">Works with any Google Business Profile · No app for customers to install</p>
 
-    <!-- 2. Value points -->
-    <section class="points" aria-label="How it works">
-      <div class="point">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
-             stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-          <rect x="2" y="6" width="20" height="12" rx="2.5"/>
-          <path d="M6 12h.01M10 12h.01M14 12h.01M18 12h.01" stroke-width="2.6"/>
-        </svg>
-        <span><strong>Tap the card</strong> — a customer's phone opens your Google review page instantly. No app, no typing.</span>
-      </div>
-      <div class="point">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
-             stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-          <path d="m21 8-9 5-9-5"/><rect x="2" y="4" width="20" height="16" rx="2.5"/>
-        </svg>
-        <span><strong>We do the setup</strong> — your review link, your message, printed and ready. You just place the card at the counter.</span>
-      </div>
-      <div class="point">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
-             stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-          <path d="M3 11l18-7-7 18-2.5-8.5Z"/>
-        </svg>
-        <span><strong>Nearby?</strong> We visit your store and handle everything in person. Anywhere else, we ship it to your door.</span>
-      </div>
-    </section>
-
-    <!-- 3. Lead form -->
-    <section class="form-card" id="formCard" aria-label="Get the solution">
-      <div class="form-head">
-        <span class="card-label">Get the solution</span>
-        <span class="form-title">Tell us where to send it</span>
-        <span class="form-sub">Takes under a minute. We'll reach out to set everything up.</span>
-      </div>
-
-      <form id="leadForm" novalidate>
-        <div class="field">
-          <label for="name">Your name</label>
-          <input type="text" id="name" name="name" autocomplete="name"
-                 placeholder="Aryan" maxlength="120" required>
-        </div>
-
-        <div class="field">
-          <label for="phone">Phone / WhatsApp</label>
-          <input type="tel" id="phone" name="phone" autocomplete="tel"
-                 inputmode="tel" placeholder="+91 98765 43210" maxlength="24" required>
-        </div>
-
-        <div class="field">
-          <label for="business">Business name</label>
-          <input type="text" id="business" name="business" autocomplete="organization"
-                 placeholder="Pizza Hut — M3M Urbana" maxlength="160" required>
-        </div>
-
-        <div class="field">
-          <label for="city">City / area <span class="opt">(optional)</span></label>
-          <input type="text" id="city" name="city" autocomplete="address-level2"
-                 placeholder="Gurugram" maxlength="120">
-        </div>
-
-        <div class="meeting">
-          <label class="meeting-row" for="meetingToggle">
-            <input type="checkbox" id="meetingToggle" name="meeting">
-            <span class="switch" aria-hidden="true"></span>
-            <span class="meeting-copy">
-              <span class="t">Book a meeting</span>
-              <span class="d">See the solution first — a quick call or a store visit</span>
-            </span>
-          </label>
-          <div class="field" id="meetingOptions" hidden style="margin:12px 0 0;">
-            <label for="meetingSlot">Preferred time</label>
-            <select id="meetingSlot" name="meeting_slot">
-              <option value="">Any time works</option>
-              <option value="Weekday mornings (10am–12pm)">Weekday mornings (10am–12pm)</option>
-              <option value="Weekday afternoons (12–4pm)">Weekday afternoons (12–4pm)</option>
-              <option value="Weekday evenings (4–8pm)">Weekday evenings (4–8pm)</option>
-              <option value="Saturday (10am–2pm)">Saturday (10am–2pm)</option>
-            </select>
+        <div class="mock" aria-hidden="true">
+          <div class="mock-screen">
+            <div class="mock-logo">PH</div>
+            <div class="mock-name">Pizza Hut — M3M Urbana</div>
+            <div class="mock-tag">Share your experience</div>
+            <div class="mock-card">
+              <div class="mock-card-label">Suggested review</div>
+              <p class="mock-card-text">The food was excellent and the service was very good. I really enjoyed my experience and would definitely recommend this place.</p>
+            </div>
+            <div class="mock-cta">Copy &amp; Open Google</div>
+            <div class="mock-note">You can edit the review before posting.</div>
+            <div class="tap-dot">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                   stroke-linecap="round" stroke-linejoin="round">
+                <rect x="5" y="2" width="14" height="20" rx="3"/>
+                <path d="m8.5 8 3.5 3.5L15.5 8"/><path d="M12 11.5V16"/>
+              </svg>
+            </div>
           </div>
         </div>
-
-        <div class="field">
-          <label for="message">Anything else? <span class="opt">(optional)</span></label>
-          <textarea id="message" name="message" maxlength="1000"
-                    placeholder="e.g. We run a café with ~200 walk-ins a day…"></textarea>
-        </div>
-
-        <button class="cta" id="submitBtn" type="submit">
-          <svg id="iconSend" viewBox="0 0 24 24" fill="none" stroke="currentColor"
-               stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-            <path d="M3 11l18-7-7 18-2.5-8.5Z"/><path d="M11.5 13.5 21 4"/>
-          </svg>
-          <span class="spinner" id="iconSpinner" hidden></span>
-          <svg id="iconCheck" viewBox="0 0 24 24" fill="none" stroke="currentColor"
-               stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" hidden aria-hidden="true">
-            <path d="M20 6 9 17l-5-5"/>
-          </svg>
-          <span id="ctaLabel">Send my details</span>
-        </button>
-
-        <p class="field-error" id="formError" role="alert" hidden></p>
-        <p class="trust">We'll only use your details to contact you about this.</p>
-      </form>
-    </section>
-
-    <!-- 4. Success state -->
-    <section class="success" id="successCard" hidden aria-live="polite">
-      <div class="badge">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"
-             stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-          <path d="M20 6 9 17l-5-5"/>
-        </svg>
       </div>
-      <h2>Got it — you're on the list</h2>
-      <p id="successCopy">We'll reach out shortly to set everything up.</p>
+    </header>
+
+    <!-- ================= Benefits ================= -->
+    <section aria-labelledby="benefits-h">
+      <div class="wrap reveal-group">
+        <p class="eyebrow reveal">Why it works</p>
+        <h2 id="benefits-h" class="reveal">Reviews happen at the table,<br>not days later</h2>
+        <div class="benefits">
+          <article class="benefit reveal">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                 stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <path d="M12 19v3"/><path d="m8 22 4-3 4 3"/><rect x="4" y="2" width="16" height="14" rx="3"/>
+              <path d="M8.5 8.5 10 10l3.5-4"/>
+            </svg>
+            <h3>Reviews without asking</h3>
+            <p>Staff never have to bring it up. The card sits at the counter and the tap does the asking.</p>
+          </article>
+          <article class="benefit reveal">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                 stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <rect x="8" y="2" width="8" height="4" rx="1"/>
+              <path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"/>
+              <path d="m9 13 2 2 4-4"/>
+            </svg>
+            <h3>Ready to paste</h3>
+            <p>A well written review is already typed. One tap copies it and opens Google.</p>
+          </article>
+          <article class="benefit reveal">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                 stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <path d="M14 11a4 4 0 1 0-8 0v3a2 2 0 0 1-2 2h8"/><path d="M10 19h9a2 2 0 0 0 2-2v-6"/><path d="m18 8 3 3-3 3"/>
+            </svg>
+            <h3>Set up for you</h3>
+            <p>We find your review link, write the suggested review, print the card and set it up.</p>
+          </article>
+          <article class="benefit reveal">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                 stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <path d="M3 11l18-7-7 18-2.5-8.5Z"/>
+            </svg>
+            <h3>Visit or delivery</h3>
+            <p>Nearby? We visit your store and handle everything in person. Anywhere else, we ship it.</p>
+          </article>
+        </div>
+      </div>
     </section>
+
+    <!-- ================= Tagline reveal ================= -->
+    <section class="tagline" aria-label="Our promise">
+      <div class="wrap">
+        <p id="taglineText">A customer finishes their meal.<br>The card is on the counter.<br>One tap later, the review is posted.</p>
+      </div>
+    </section>
+
+    <!-- ================= How it works ================= -->
+    <section aria-labelledby="how-h">
+      <div class="wrap reveal-group">
+        <p class="eyebrow reveal">How it works</p>
+        <h2 id="how-h" class="reveal">Three steps, then it runs itself</h2>
+        <div class="steps">
+          <article class="step reveal">
+            <div class="step-num" aria-hidden="true"></div>
+            <div>
+              <h3>Share your Google listing</h3>
+              <p>Send us your business name or a Maps link. We locate your review page and write the suggested review with you.</p>
+            </div>
+          </article>
+          <article class="step reveal">
+            <div class="step-num" aria-hidden="true"></div>
+            <div>
+              <h3>We build your card</h3>
+              <p>Your review page goes live and your NFC card is printed with it, plus a QR code on the back for phones without NFC.</p>
+            </div>
+          </article>
+          <article class="step reveal">
+            <div class="step-num" aria-hidden="true"></div>
+            <div>
+              <h3>Customers tap and post</h3>
+              <p>A tap opens your review page instantly. <a class="step-link" href="index.html">See exactly what they see</a>. That page is your demo.</p>
+            </div>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <!-- ================= FAQ ================= -->
+    <section aria-labelledby="faq-h">
+      <div class="wrap reveal-group">
+        <p class="eyebrow reveal">Questions</p>
+        <h2 id="faq-h" class="reveal">Before you commit</h2>
+        <div class="faq">
+          <details class="reveal">
+            <summary>Is this allowed by Google?
+              <svg class="chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg>
+            </summary>
+            <p class="answer">Yes. The card opens Google's own review form on the customer's phone. Customers read, edit or rewrite the review before posting it. Nothing is posted automatically and no rating is suggested.</p>
+          </details>
+          <details class="reveal">
+            <summary>What does the customer see when they tap?
+              <svg class="chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg>
+            </summary>
+            <p class="answer">A clean page with your business name, a suggested review they can edit, and one button that copies it and opens your Google review form. Nothing is installed and no app is needed.</p>
+          </details>
+          <details class="reveal">
+            <summary>Do customers need to install an app?
+              <svg class="chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg>
+            </summary>
+            <p class="answer">No. NFC tap to open works in the phone's browser on modern iPhones and Android phones. Every card also ships with a QR code printed on the back for phones without NFC.</p>
+          </details>
+          <details class="reveal">
+            <summary>Can a customer edit the review before posting?
+              <svg class="chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg>
+            </summary>
+            <p class="answer">Always. The suggested review is a starting point. The page tells the customer they can edit it before posting, and they can rewrite it completely if they want.</p>
+          </details>
+          <details class="reveal">
+            <summary>What if a phone does not support NFC?
+              <svg class="chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg>
+            </summary>
+            <p class="answer">Every card ships with a QR code printed on the back that opens the same review page, so no customer is turned away.</p>
+          </details>
+          <details class="reveal">
+            <summary>How much does it cost?
+              <svg class="chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg>
+            </summary>
+            <p class="answer">Simple flat pricing per location, with no monthly fee. Tell us about your business through the form and we will send you the exact price for your setup.</p>
+          </details>
+          <details class="reveal">
+            <summary>How long does setup take?
+              <svg class="chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg>
+            </summary>
+            <p class="answer">We usually deliver within a week. Nearby businesses get a store visit where we handle everything in person; everyone else gets their card by delivery.</p>
+          </details>
+          <details class="reveal">
+            <summary>What do you need from me?
+              <svg class="chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg>
+            </summary>
+            <p class="answer">Just your Google Business Profile listing. We find your review link, write the suggested review, print the card and set it up. You place it at the counter.</p>
+          </details>
+          <details class="reveal">
+            <summary>Where is the data stored?
+              <svg class="chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg>
+            </summary>
+            <p class="answer">Your enquiry is stored in our database so we can contact you. We use it only for this and never share it. See the privacy policy linked in the footer.</p>
+          </details>
+        </div>
+      </div>
+    </section>
+
+    <!-- ================= Lead form ================= -->
+    <section class="lead" id="lead" aria-labelledby="lead-h">
+      <div class="wrap">
+        <p class="eyebrow reveal">Get started</p>
+        <h2 id="lead-h" class="reveal">Get your review card</h2>
+
+        <div class="fade-swap" id="fadeSwap">
+          <div class="form-card" id="formCard">
+            <form id="leadForm" novalidate>
+              <div class="field">
+                <label for="name">Your name</label>
+                <input type="text" id="name" name="name" autocomplete="name"
+                       placeholder="Aryan" maxlength="120" required>
+              </div>
+              <div class="field">
+                <label for="phone">Phone / WhatsApp</label>
+                <input type="tel" id="phone" name="phone" autocomplete="tel"
+                       inputmode="tel" placeholder="+91 98765 43210" maxlength="24" required>
+              </div>
+              <div class="field">
+                <label for="business">Business name</label>
+                <input type="text" id="business" name="business" autocomplete="organization"
+                       placeholder="Pizza Hut — M3M Urbana" maxlength="160" required>
+              </div>
+              <div class="field">
+                <label for="city">City / area <span class="opt">(optional)</span></label>
+                <input type="text" id="city" name="city" autocomplete="address-level2"
+                       placeholder="Gurugram" maxlength="120">
+              </div>
+
+              <div class="meeting">
+                <label class="meeting-row" for="meetingToggle">
+                  <input type="checkbox" id="meetingToggle" name="meeting">
+                  <span class="switch" aria-hidden="true"></span>
+                  <span class="meeting-copy">
+                    <span class="t">Book a meeting</span>
+                    <span class="d">See the solution first — a quick call or a store visit</span>
+                  </span>
+                </label>
+                <div class="field" id="meetingSlotField" hidden>
+                  <label for="meetingSlot">Preferred time</label>
+                  <select id="meetingSlot" name="meeting_slot">
+                    <option value="">Any time works</option>
+                    <option value="Weekday mornings (10am–12pm)">Weekday mornings (10am–12pm)</option>
+                    <option value="Weekday afternoons (12–4pm)">Weekday afternoons (12–4pm)</option>
+                    <option value="Weekday evenings (4–8pm)">Weekday evenings (4–8pm)</option>
+                    <option value="Saturday (10am–2pm)">Saturday (10am–2pm)</option>
+                  </select>
+                </div>
+              </div>
+
+              <div class="field">
+                <label for="message">Anything else? <span class="opt">(optional)</span></label>
+                <textarea id="message" name="message" maxlength="1000"
+                          placeholder="e.g. We run a café with about 200 walk-ins a day…"></textarea>
+              </div>
+
+              <button class="btn" id="submitBtn" type="submit">
+                <svg id="iconSend" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                     stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                  <path d="M3 11l18-7-7 18-2.5-8.5Z"/><path d="M11.5 13.5 21 4"/>
+                </svg>
+                <span class="spinner" id="iconSpinner" hidden></span>
+                <span id="ctaLabel">Send my details</span>
+              </button>
+
+              <p class="field-error" id="formError" role="alert" hidden></p>
+              <p class="trust">We'll only use your details to contact you about this.</p>
+            </form>
+          </div>
+
+          <div class="success-card" id="successCard" hidden aria-live="polite">
+            <div class="badge">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"
+                   stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <path d="M20 6 9 17l-5-5"/>
+              </svg>
+            </div>
+            <h3>Got it — you're on the list</h3>
+            <p id="successCopy">We'll reach out shortly to set everything up.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ================= Footer ================= -->
+    <footer>
+      <div class="wrap foot">
+        <div class="foot-brand">TapCard</div>
+        <div class="foot-links">
+          <a href="privacy.html">Privacy</a>
+          <a href="index.html">Demo review page</a>
+        </div>
+        <div class="foot-copy">© <span id="year">2026</span> TapCard. All rights reserved.</div>
+      </div>
+    </footer>
 
   </main>
 
@@ -500,33 +952,85 @@
        1. Run schema.sql in your Neon project (creates `leads`
           and the insert-only `leads_writer` role).
        2. Paste the leads_writer connection string below.
-       Without it, the form falls back to opening a prefilled
-       email (submitEndpoint can also point at your own API).
+       Without it, the form falls back to a prefilled email.
        ========================================================= */
     const CONFIG = {
       neonConnectionString: "",
-      submitEndpoint: "",     // optional: POST JSON here instead of Neon
-      fallbackEmail: "",      // optional: mailto fallback, e.g. "you@biz.com"
+      submitEndpoint: "",
+      fallbackEmail: "",
       successCopyDefault: "We'll reach out shortly to set everything up.",
       successCopyMeeting: "We'll reach out shortly to confirm your meeting and set everything up.",
     };
 
-    /* ---------- Elements ---------- */
     const $ = (id) => document.getElementById(id);
-    const form        = $("leadForm");
-    const submitBtn   = $("submitBtn");
-    const ctaLabel    = $("ctaLabel");
-    const iconSend    = $("iconSend");
-    const iconSpinner = $("iconSpinner");
-    const iconCheck   = $("iconCheck");
-    const formError   = $("formError");
-    const formCard    = $("formCard");
-    const successCard = $("successCard");
-    const successCopy = $("successCopy");
-    const toggle      = $("meetingToggle");
-    const slotField   = $("meetingOptions");
 
-    /* ---------- Draft persistence (survives reload/mistaps) ---------- */
+    /* ---------- Reveal on scroll (IntersectionObserver) ---------- */
+    const reducedMotion = matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+    const revealEls = document.querySelectorAll(".reveal");
+    if (reducedMotion) {
+      revealEls.forEach((el) => el.classList.add("in"));
+    } else {
+      const io = new IntersectionObserver((entries) => {
+        for (const entry of entries) {
+          if (entry.isIntersecting) {
+            entry.target.classList.add("in");
+            io.unobserve(entry.target);
+          }
+        }
+      }, { threshold: 0.15, rootMargin: "0px 0px -40px 0px" });
+      revealEls.forEach((el) => io.observe(el));
+    }
+
+    /* ---------- Sticky CTA pill: appears after the hero ---------- */
+    const pill = $("ctaPill");
+    const heroSentinel = new IntersectionObserver(([entry]) => {
+      pill.classList.toggle("show", !entry.isIntersecting);
+    }, { threshold: 0 });
+    heroSentinel.observe(document.querySelector(".hero"));
+
+    /* ---------- Tagline word reveal ---------- */
+    (function tagline() {
+      const p = $("taglineText");
+      const frag = document.createDocumentFragment();
+
+      /* Walk child nodes so <br> line breaks survive word wrapping. */
+      Array.from(p.childNodes).forEach((node) => {
+        if (node.nodeType === Node.TEXT_NODE) {
+          node.textContent.split(/\s+/).filter(Boolean).forEach((word) => {
+            const span = document.createElement("span");
+            span.className = "w";
+            span.textContent = word;
+            frag.appendChild(span);
+            frag.appendChild(document.createTextNode(" "));
+          });
+        } else if (node.nodeName === "BR") {
+          frag.appendChild(document.createElement("br"));
+        }
+      });
+      p.textContent = "";
+      p.appendChild(frag);
+
+      const spans = p.querySelectorAll(".w");
+      if (reducedMotion) {
+        spans.forEach((span) => span.classList.add("on"));
+        return;
+      }
+
+      // Reveal words one by one, staggered, once the block enters the viewport —
+      // like reading them. (Word-by-word scroll activation can strand words
+      // that never cross the trigger line on short viewports.)
+      const blockIo = new IntersectionObserver(([entry]) => {
+        if (!entry.isIntersecting) return;
+        blockIo.disconnect();
+        spans.forEach((span, idx) => {
+          setTimeout(() => span.classList.add("on"), 90 * idx);
+        });
+      }, { threshold: 0.5 });
+      blockIo.observe(p);
+    })();
+
+    /* ---------- Draft persistence ---------- */
     const DRAFT_KEY = "pitch-lead-draft";
     const FIELDS = ["name", "phone", "business", "city", "message", "meetingSlot"];
 
@@ -534,51 +1038,43 @@
       try {
         const data = {};
         FIELDS.forEach((f) => { data[f] = $(f).value; });
-        data.meeting = toggle.checked;
+        data.meeting = $("meetingToggle").checked;
         localStorage.setItem(DRAFT_KEY, JSON.stringify(data));
-      } catch (_) { /* storage unavailable — ignore */ }
+      } catch (_) { /* storage unavailable */ }
     }
-
     function loadDraft() {
       try {
         const data = JSON.parse(localStorage.getItem(DRAFT_KEY) || "{}");
-        FIELDS.forEach((f) => {
-          if (data[f]) $(f).value = data[f];
-        });
+        FIELDS.forEach((f) => { if (data[f]) $(f).value = data[f]; });
         if (data.meeting) {
-          toggle.checked = true;
-          slotField.hidden = false;
+          $("meetingToggle").checked = true;
+          $("meetingSlotField").hidden = false;
         }
       } catch (_) { /* ignore */ }
     }
-
-    form.addEventListener("input", saveDraft);
-
-    /* ---------- Meeting toggle ---------- */
-    toggle.addEventListener("change", () => {
-      slotField.hidden = !toggle.checked;
+    $("leadForm").addEventListener("input", saveDraft);
+    $("meetingToggle").addEventListener("change", () => {
+      $("meetingSlotField").hidden = !$("meetingToggle").checked;
       saveDraft();
     });
 
     /* ---------- Validation ---------- */
     function setError(msg) {
-      formError.textContent = msg;
-      formError.hidden = !msg;
+      const el = $("formError");
+      el.textContent = msg || "";
+      el.hidden = !msg;
     }
-
     function validate() {
-      const name     = $("name").value.trim();
-      const phone    = $("phone").value.trim();
+      const name = $("name").value.trim();
+      const phone = $("phone").value.trim();
       const business = $("business").value.trim();
-
-      if (!name)     { $("name").focus();     return "Please add your name."; }
+      if (!name) { $("name").focus(); return "Please add your name."; }
       if (!business) { $("business").focus(); return "Please add your business name."; }
-      const digits = phone.replace(/\D/g, "");
-      if (digits.length < 8) { $("phone").focus(); return "Please add a valid phone number."; }
+      if (phone.replace(/\D/g, "").length < 8) { $("phone").focus(); return "Please add a valid phone number."; }
       return null;
     }
 
-    /* ---------- Neon insert ---------- */
+    /* ---------- Submission (Neon / endpoint / mailto) ---------- */
     async function insertIntoNeon(payload) {
       const { neon } = await import("@neondatabase/serverless");
       const sql = neon(CONFIG.neonConnectionString);
@@ -588,21 +1084,14 @@
          VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9)
          RETURNING id`,
         [
-          payload.name,
-          payload.phone,
-          payload.business,
-          payload.city || null,
-          payload.meeting,
-          payload.meeting_slot || null,
-          payload.message || null,
-          "pitch-page",
-          navigator.userAgent.slice(0, 300),
+          payload.name, payload.phone, payload.business,
+          payload.city || null, payload.meeting,
+          payload.meeting_slot || null, payload.message || null,
+          "landing-page", navigator.userAgent.slice(0, 300),
         ]
       );
       return rows && rows[0] && rows[0].id;
     }
-
-    /* ---------- Optional custom endpoint ---------- */
     async function postToEndpoint(payload) {
       const res = await fetch(CONFIG.submitEndpoint, {
         method: "POST",
@@ -611,36 +1100,27 @@
       });
       if (!res.ok) throw new Error("Endpoint returned " + res.status);
     }
-
-    /* ---------- Fallbacks ---------- */
     function mailtoFallback(payload) {
       const body =
-        `Name: ${payload.name}\n` +
-        `Phone: ${payload.phone}\n` +
-        `Business: ${payload.business}\n` +
-        `City: ${payload.city || "—"}\n` +
-        `Meeting: ${payload.meeting ? "yes" : "no"}` +
+        `Name: ${payload.name}\nPhone: ${payload.phone}\nBusiness: ${payload.business}\n` +
+        `City: ${payload.city || "—"}\nMeeting: ${payload.meeting ? "yes" : "no"}` +
         `${payload.meeting ? ` (${payload.meeting_slot || "any time"})` : ""}\n` +
         `Message: ${payload.message || "—"}`;
-      location.href =
-        "mailto:" + CONFIG.fallbackEmail +
-        "?subject=" + encodeURIComponent("Google reviews solution — new enquiry") +
+      location.href = "mailto:" + CONFIG.fallbackEmail +
+        "?subject=" + encodeURIComponent("TapCard — new enquiry") +
         "&body=" + encodeURIComponent(body);
     }
 
-    /* ---------- Submit ---------- */
     let busy = false;
-
     function setBusy(state) {
-      busy = state;
-      iconSend.hidden    = state !== "sending";
-      iconSpinner.hidden = state !== "sending";
-      ctaLabel.textContent =
-        state === "sending" ? "Sending…" : "Send my details";
-      submitBtn.disabled = state === "sending";
+      busy = state === "sending";
+      $("iconSend").hidden = state === "sending";
+      $("iconSpinner").hidden = state !== "sending";
+      $("ctaLabel").textContent = state === "sending" ? "Sending…" : "Send my details";
+      $("submitBtn").disabled = state === "sending";
     }
 
-    form.addEventListener("submit", async (e) => {
+    $("leadForm").addEventListener("submit", async (e) => {
       e.preventDefault();
       if (busy) return;
       setError(null);
@@ -649,38 +1129,33 @@
       if (invalid) { setError(invalid); return; }
 
       const payload = {
-        name:     $("name").value.trim(),
-        phone:    $("phone").value.trim(),
+        name: $("name").value.trim(),
+        phone: $("phone").value.trim(),
         business: $("business").value.trim(),
-        city:     $("city").value.trim(),
-        meeting:  toggle.checked,
-        meeting_slot: toggle.checked ? $("meetingSlot").value : "",
-        message:  $("message").value.trim(),
+        city: $("city").value.trim(),
+        meeting: $("meetingToggle").checked,
+        meeting_slot: $("meetingToggle").checked ? $("meetingSlot").value : "",
+        message: $("message").value.trim(),
       };
 
       setBusy("sending");
       try {
-        if (CONFIG.neonConnectionString) {
-          await insertIntoNeon(payload);
-        } else if (CONFIG.submitEndpoint) {
-          await postToEndpoint(payload);
-        } else if (CONFIG.fallbackEmail) {
-          mailtoFallback(payload); // hands off to the mail app; keep success state minimal
-          setBusy(false);
-          return;
-        } else {
-          throw new Error("not-configured");
-        }
+        if (CONFIG.neonConnectionString) await insertIntoNeon(payload);
+        else if (CONFIG.submitEndpoint) await postToEndpoint(payload);
+        else if (CONFIG.fallbackEmail) { mailtoFallback(payload); setBusy(false); return; }
+        else throw new Error("not-configured");
 
-        setBusy("done");
-        formCard.hidden = true;
-        successCopy.textContent =
-          payload.meeting ? CONFIG.successCopyMeeting : CONFIG.successCopyDefault;
-        successCard.hidden = false;
-        successCard.scrollIntoView({ behavior: "smooth", block: "center" });
+        setBusy(false);
+        $("formCard").classList.add("out");
+        setTimeout(() => {
+          $("formCard").hidden = true;
+          $("successCard").hidden = false;
+          $("successCopy").textContent =
+            payload.meeting ? CONFIG.successCopyMeeting : CONFIG.successCopyDefault;
+        }, 200);
         try { localStorage.removeItem(DRAFT_KEY); } catch (_) {}
       } catch (err) {
-        console.error("[pitch] submit failed:", err);
+        console.error("[lead] submit failed:", err);
         setBusy(false);
         setError(
           err.message === "not-configured"
@@ -690,6 +1165,7 @@
       }
     });
 
+    $("year").textContent = new Date().getFullYear();
     loadDraft();
   </script>
 </body>
