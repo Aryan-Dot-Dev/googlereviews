@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-  <meta name="theme-color" content="#fafafa">
+  <meta name="theme-color" content="#fafaf9">
   <title>TapCard — More Google reviews, without asking</title>
   <meta name="description" content="TapCard puts an NFC review card on your counter. Your customer taps it, Google opens, and a suggested review is ready to paste. Flat price, no monthly fee, setup handled for you.">
   <link rel="canonical" href="https://googlereviews.in/">
@@ -49,41 +49,41 @@
          Primitives are ramps with constant hue; components only
          ever reference the semantic tokens below.
 
-         Neutral ramp (cool neutral, hue ~260, chroma ~0.004):
+         Neutral ramp (warm stone, hue ~50, chroma ~0.006):
            25  #fcfcfd   (reserved: softest surface)
-           50  #fafafa   bg-page
-           100 #f4f4f5   bg-inset
-           200 #ececee   border-soft
-           300 #e3e3e6   border
-           400 #d4d4d8   border-strong
-           600 #52525b   text-secondary
-           500 #71717a   text-tertiary
-           900 #18181b   text-primary
+           50  #fafaf9   bg-page
+           100 #f4f4f3   bg-inset
+           200 #ececea   border-soft
+           300 #e3e3e0   border
+           400 #d5d4d0   border-strong
+           600 #55534e   text-secondary
+           500 #75736e   text-tertiary
+           900 #1c1917   text-primary
 
-         Accent ramp (green, hue ~150):
-           700 #15803d   accent-solid / accent-text
-           750 #136f35   accent-solid-hover
-           100 #e9f6ee   accent-soft
-           200 #c9e7d3   accent-border
+         Accent ramp (cobalt, hue ~262):
+           700 #1d4ed8   accent-solid / accent-text
+           750 #1a44bc   accent-solid-hover
+           100 #e8edfb   accent-soft
+           200 #c8d4f4   accent-border
 
          Danger ramp (red, error text only):
            700 #b42318   danger-text
          ========================================================= */
-      --color-bg-page: #fafafa;
+      --color-bg-page: #fafaf9;
       --color-bg-surface: #ffffff;
-      --color-bg-inset: #f4f4f5;
-      --color-border-soft: #ececee;
-      --color-border: #e3e3e6;
-      --color-border-strong: #d4d4d8;
-      --color-text-primary: #18181b;
-      --color-text-secondary: #52525b;
-      --color-text-tertiary: #71717a;
+      --color-bg-inset: #f4f4f3;
+      --color-border-soft: #ececea;
+      --color-border: #e3e3e0;
+      --color-border-strong: #d5d4d0;
+      --color-text-primary: #1c1917;
+      --color-text-secondary: #55534e;
+      --color-text-tertiary: #75736e;
 
-      --color-accent-solid: #15803d;
-      --color-accent-solid-hover: #136f35;
-      --color-accent-text: #15803d;
-      --color-accent-soft: #e9f6ee;
-      --color-accent-border: #c9e7d3;
+      --color-accent-solid: #1d4ed8;
+      --color-accent-solid-hover: #1a44bc;
+      --color-accent-text: #1d4ed8;
+      --color-accent-soft: #e8edfb;
+      --color-accent-border: #c8d4f4;
 
       --color-danger-text: #b42318;
 
@@ -132,7 +132,7 @@
       inset: 0;
       z-index: 0;
       pointer-events: none;
-      background: radial-gradient(720px 520px at 80% 8%, rgba(21, 128, 61, 0.05), transparent 70%);
+      background: radial-gradient(720px 520px at 80% 8%, rgba(29, 78, 216, 0.04), transparent 70%);
     }
     body::after {
       content: "";
@@ -146,7 +146,7 @@
 
     main { position: relative; z-index: 2; }
 
-    ::selection { background: rgba(21, 128, 61, 0.16); }
+    ::selection { background: rgba(29, 78, 216, 0.12); }
 
     h1, h2, h3 { text-wrap: balance; font-weight: 600; letter-spacing: -0.02em; color: var(--color-text-primary); }
     p { text-wrap: pretty; }
@@ -357,7 +357,7 @@
       gap: var(--s-300);
     }
     .hero-card .row { display: flex; justify-content: space-between; align-items: center; }
-    .hero-card .row i { font-size: var(--text-2xl); color: #4ade80; }
+    .hero-card .row i { font-size: var(--text-2xl); color: #93b4f8; }
     .hero-card .chip {
       width: 30px; height: 22px; border-radius: 6px;
       border: 1.5px solid #71717a;
@@ -386,7 +386,7 @@
       position: absolute;
       inset: 0;
       border-radius: 50%;
-      border: 2px solid rgba(21, 128, 61, 0.45);
+      border: 2px solid rgba(29, 78, 216, 0.45);
       animation: ripple 2.2s var(--ease-out) infinite;
     }
     @keyframes ripple {
@@ -465,7 +465,7 @@
       position: relative;
       z-index: 1;
       padding: var(--s-300);
-      background: linear-gradient(transparent, rgba(20, 22, 21, 0.82));
+      background: linear-gradient(transparent, rgba(28, 25, 23, 0.82));
     }
     .bento-img-cell .cap h3 { color: #ffffff; }
     .bento-img-cell .cap p { color: #d4d4d8; }
@@ -599,7 +599,7 @@
       inset: auto 0 0 0;
       z-index: 1;
       padding: var(--s-300);
-      background: linear-gradient(transparent, rgba(20, 22, 21, 0.88));
+      background: linear-gradient(transparent, rgba(28, 25, 23, 0.88));
     }
     .slice h3 { color: #ffffff; font-size: var(--text-lg); }
     .slice p {
@@ -692,8 +692,8 @@
     textarea { min-height: 84px; resize: vertical; }
     input:focus, textarea:focus, select:focus {
       outline: none;
-      border-color: rgba(21, 128, 61, 0.55);
-      box-shadow: 0 0 0 3px rgba(21, 128, 61, 0.12);
+      border-color: rgba(29, 78, 216, 0.55);
+      box-shadow: 0 0 0 3px rgba(29, 78, 216, 0.10);
     }
     input::placeholder, textarea::placeholder { color: var(--color-text-tertiary); }
     .meeting {
